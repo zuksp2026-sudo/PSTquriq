@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГAPAЖ-01: CODE SAVER & RE-NAMER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,800;1,400;1,800&display=swap');
+        body { font-family: 'JetBrains Mono', monospace; background-color: #fcfcfc; }
+        .brutal-btn-shadow { box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1); }
+        .brutal-btn-shadow:active { transform: translate(4px, 4px); box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1); }
+        .brutal-card-shadow { box-shadow: 6px 6px 0px 0px rgba(127, 29, 29, 1); }
+        .editor-bg { background-color: #18181b; color: #34d399; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #000; border-radius: 2px; }
+    </style>
+</head>
+<body class="p-4 md:p-10 bg-zinc-50">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+        <header class="border-b-8 border-black pb-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="p-4 bg-black text-white brutal-btn-shadow">
+                    <i data-lucide="file-code-2" class="w-10 h-10"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black uppercase italic tracking-tighter leading-none">ЦЕХ ПЕРЕПРОШИВКИ</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.3em] mt-1 italic">ГAPAЖ-01 | ТЮНИНГ И СОХРАНЕНИЕ</p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 w-full md:w-auto">
+                <button onclick="document.getElementById('fileInput').click()" class="flex-1 md:flex-none px-6 py-3 bg-white border-4 border-black font-black uppercase text-xs brutal-btn-shadow hover:bg-zinc-100 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="upload" class="w-4 h-4"></i> ЗАГРУЗИТЬ HTML
+                </button>
+                <input type="file" id="fileInput" accept=".html" class="hidden" onchange="handleFileLoad(this)">
+                
+                <button onclick="clearEditor()" class="px-4 py-3 bg-red-900 text-white border-4 border-black font-black uppercase text-xs brutal-btn-shadow hover:bg-black transition-all">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 gap-6">
+            <!-- ИМЯ ФАЙЛА -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-zinc-400 tracking-widest italic">КАК НАЗОВЕМ? (FILENAME)</label>
+                <input type="text" id="fileNameInput" placeholder="my_new_app.html" class="w-full bg-white border-4 border-black p-4 text-sm font-bold focus:ring-4 focus:ring-red-200 outline-none">
+            </div>
+
+            <!-- ОКНО РЕДАКТОРА -->
+            <div class="space-y-2">
+                <div class="flex items-center justify-between px-2">
+                    <label class="text-[10px] font-black uppercase text-zinc-400 tracking-widest italic">КОД В МЯСОРУБКЕ (SOURCE CODE)</label>
+                    <span id="charCount" class="text-[10px] font-bold text-zinc-400">0 ЗНАКОВ</span>
+                </div>
+                <textarea id="codeEditor" spellcheck="false" class="w-full h-[500px] editor-bg border-4 border-black p-6 text-sm font-mono focus:ring-4 focus:ring-emerald-200 outline-none resize-none brutal-card-shadow" placeholder="ВСТАВЛЯЙ КОД СЮДА ИЛИ ЗАГРУЖАЙ ФАЙЛ..."></textarea>
+            </div>
+        </div>
+
+        <!-- КНОПКА СОХРАНЕНИЯ -->
+        <button onclick="saveNewFile()" class="w-full py-8 text-3xl font-black uppercase tracking-[0.5em] transition-all border-8 border-black bg-black text-white hover:bg-red-900 brutal-btn-shadow italic flex items-center justify-center gap-4">
+            <i data-lucide="save" class="w-8 h-8"></i> СОХРАНИТЬ ФАЙЛ
+        </button>
+        
+        <div id="statusMsg" class="hidden bg-emerald-500 text-white border-4 border-black p-4 font-bold text-center uppercase text-xs italic animate-bounce">
+            ФАЙЛ УШЕЛ В ЗАГРУЗКИ!
+        </div>
+    </div>
+
+    <script>
+        // Инициализация иконок
+        window.onload = () => { lucide.createIcons(); };
+
+        const editor = document.getElementById('codeEditor');
+        const nameInput = document.getElementById('fileNameInput');
+        const charCount = document.getElementById('charCount');
+
+        // Обновление счетчика символов
+        editor.addEventListener('input', () => {
+            charCount.innerText = `${editor.value.length} ЗНАКОВ`;
+        });
+
+        // Загрузка файла
+        function handleFileLoad(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                editor.value = e.target.result;
+                nameInput.value = file.name.replace('.html', '_new.html');
+                charCount.innerText = `${editor.value.length} ЗНАКОВ`;
+                showStatus("ФАЙЛ ПРИНЯТ В ОБРАБОТКУ");
+            };
+            reader.readAsText(file);
+        }
+
+        // Очистка
+        function clearEditor() {
+            if(confirm("ВЫБРОСИТЬ ВСЁ В МУСОР?")) {
+                editor.value = "";
+                nameInput.value = "";
+                charCount.innerText = "0 ЗНАКОВ";
+            }
+        }
+
+        // Сохранение
+        function saveNewFile() {
+            const content = editor.value.trim();
+            let filename = nameInput.value.trim();
+
+            if (!content) {
+                alert("КОД ПУСТОЙ! ЧТО ТЫ СОХРАНЯТЬ СОБРАЛСЯ?");
+                return;
+            }
+
+            if (!filename) {
+                filename = "garage_artifact.html";
+            }
+
+            if (!filename.toLowerCase().endsWith('.html')) {
+                filename += '.html';
+            }
+
+            try {
+                const blob = new Blob([content], { type: 'text/html' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                showStatus("ФАЙЛ СОХРАНЕН: " + filename);
+            } catch (e) {
+                alert("ОШИБКА СИСТЕМЫ: " + e.message);
+            }
+        }
+
+        function showStatus(text) {
+            const status = document.getElementById('statusMsg');
+            status.innerText = text;
+            status.classList.remove('hidden');
+            setTimeout(() => { status.classList.add('hidden'); }, 3000);
+        }
+    </script>
+</body>
+</html>
