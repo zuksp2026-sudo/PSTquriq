@@ -1,1 +1,398 @@
-ufucucucuvuv
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARAGE_V4 • Sentence Assembly Engine</title>
+    <!-- Кузов от Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Зажигание (React & Babel) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Набор инструментов (Lucide Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        body { 
+            font-family: 'JetBrains Mono', monospace; 
+            background-color: #171717; 
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #171717; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #404040; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ea580c; }
+        .icon-wrapper svg { display: inline-block; vertical-align: middle; }
+    </style>
+</head>
+<body class="text-neutral-200">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        // --- УСИЛЕННЫЙ КОМПОНЕНТ ИКОНОК ---
+        const Icon = ({ name, className = "w-4 h-4" }) => {
+            const [svg, setSvg] = useState('');
+            useEffect(() => {
+                const renderIcon = () => {
+                    if (window.lucide && window.lucide.icons) {
+                        const iconData = window.lucide.icons[name];
+                        if (iconData) {
+                            const element = window.lucide.createElement(iconData);
+                            const classList = className.split(' ');
+                            classList.forEach(cls => { if (cls) element.classList.add(cls); });
+                            setSvg(element.outerHTML);
+                        }
+                    }
+                };
+                renderIcon();
+                const timer = setTimeout(renderIcon, 50);
+                return () => clearTimeout(timer);
+            }, [name, className]);
+            return <span className="icon-wrapper inline-flex items-center" dangerouslySetInnerHTML={{ __html: svg }} />;
+        };
+
+        const App = () => {
+            const [forms, setForms] = useState({ v1: '', v2: '', v3: '', ving: '', vs: '' });
+            const [mode, setMode] = useState('affirmative');
+            const [voice, setVoice] = useState('active');
+            const [tenses, setTenses] = useState({ simple: true, continuous: true, perfect: true, perfectCont: false });
+            const [output, setOutput] = useState('');
+            const [copied, setCopied] = useState(false);
+            const textAreaRef = useRef(null);
+
+            const loadExample = () => {
+                setForms({ v1: 'drive', v2: 'drove', v3: 'driven', ving: 'driving', vs: 'drives' });
+            };
+
+            const clearForms = () => {
+                setForms({ v1: '', v2: '', v3: '', ving: '', vs: '' });
+                setOutput('');
+            };
+
+            const handleInput = (e) => {
+                const { name, value } = e.target;
+                setForms(prev => ({ ...prev, [name]: value }));
+            };
+
+            const toggleTense = (key) => {
+                setTenses(prev => ({ ...prev, [key]: !prev[key] }));
+            };
+
+            const copyToClipboard = () => {
+                if (textAreaRef.current) {
+                    textAreaRef.current.select();
+                    document.execCommand('copy');
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                    window.getSelection().removeAllRanges();
+                }
+            };
+
+            useEffect(() => {
+                if (!forms.v1) {
+                    setOutput('...Ожидание топлива (введите глагол)...');
+                    return;
+                }
+                const v1 = forms.v1.trim();
+                const v2 = forms.v2.trim() || `${v1}ed`;
+                const v3 = forms.v3.trim() || `${v1}ed`;
+                const ving = forms.ving.trim() || `${v1}ing`;
+                const vs = forms.vs.trim() || `${v1}s`;
+                
+                const pronouns = ["I", "You", "He", "She", "It", "We", "They"];
+                let result = [];
+
+                if (voice === 'active') {
+                    if (tenses.simple) {
+                        result.push("--- SIMPLE ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => result.push(`${p} ${v2} it.`)); 
+                            pronouns.forEach(p => { if (["He", "She", "It"].includes(p)) result.push(`${p} ${vs} it.`); else result.push(`${p} ${v1} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will ${v1} it.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => result.push(`${p} did not ${v1} it.`));
+                            pronouns.forEach(p => { if (["He", "She", "It"].includes(p)) result.push(`${p} does not ${v1} it.`); else result.push(`${p} do not ${v1} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will not ${v1} it.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => result.push(`Did ${p} ${v1} it?`));
+                            pronouns.forEach(p => { if (["He", "She", "It"].includes(p)) result.push(`Does ${p} ${v1} it?`); else result.push(`Do ${p} ${v1} it?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} ${v1} it?`));
+                        }
+                        result.push("");
+                    }
+                    if (tenses.continuous) {
+                        result.push("--- CONTINUOUS ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "was" : "were"; result.push(`${p} ${aux} ${ving} it.`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "am" : (["He", "She", "It"].includes(p)) ? "is" : "are"; result.push(`${p} ${aux} ${ving} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will be ${ving} it.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "was" : "were"; result.push(`${p} ${aux} not ${ving} it.`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "am" : (["He", "She", "It"].includes(p)) ? "is" : "are"; result.push(`${p} ${aux} not ${ving} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will not be ${ving} it.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "Was" : "Were"; result.push(`${aux} ${p} ${ving} it?`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "Am" : (["He", "She", "It"].includes(p)) ? "Is" : "Are"; result.push(`${aux} ${p} ${ving} it?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} be ${ving} it?`));
+                        }
+                        result.push("");
+                    }
+                    if (tenses.perfect) {
+                        result.push("--- PERFECT ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => result.push(`${p} had ${v3} it.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} ${v3} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will have ${v3} it.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => result.push(`${p} had not ${v3} it.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} not ${v3} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will not have ${v3} it.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => result.push(`Had ${p} ${v3} it?`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "Has" : "Have"; result.push(`${aux} ${p} ${v3} it?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} have ${v3} it?`));
+                        }
+                        result.push("");
+                    }
+                    if (tenses.perfectCont) {
+                        result.push("--- PERFECT CONTINUOUS ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => result.push(`${p} had been ${ving} it.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} been ${ving} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will have been ${ving} it.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => result.push(`${p} had not been ${ving} it.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} not been ${ving} it.`); });
+                            pronouns.forEach(p => result.push(`${p} will not have been ${ving} it.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => result.push(`Had ${p} been ${ving} it?`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "Has" : "Have"; result.push(`${aux} ${p} been ${ving} it?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} have been ${ving} it?`));
+                        }
+                        result.push("");
+                    }
+                } else {
+                    // PASSIVE VOICE
+                    if (tenses.simple) {
+                        result.push("--- SIMPLE (PASSIVE) ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "was" : "were"; result.push(`${p} ${aux} ${v3}.`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "am" : (["He", "She", "It"].includes(p)) ? "is" : "are"; result.push(`${p} ${aux} ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will be ${v3}.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "was" : "were"; result.push(`${p} ${aux} not ${v3}.`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "am" : (["He", "She", "It"].includes(p)) ? "is" : "are"; result.push(`${p} ${aux} not ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will not be ${v3}.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "Was" : "Were"; result.push(`${aux} ${p} ${v3}?`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "Am" : (["He", "She", "It"].includes(p)) ? "Is" : "Are"; result.push(`${aux} ${p} ${v3}?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} be ${v3}?`));
+                        }
+                        result.push("");
+                    }
+                    if (tenses.continuous) {
+                        result.push("--- CONTINUOUS (PASSIVE) ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "was" : "were"; result.push(`${p} ${aux} being ${v3}.`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "am" : (["He", "She", "It"].includes(p)) ? "is" : "are"; result.push(`${p} ${aux} being ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will be being ${v3}.`)); 
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "was" : "were"; result.push(`${p} ${aux} not being ${v3}.`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "am" : (["He", "She", "It"].includes(p)) ? "is" : "are"; result.push(`${p} ${aux} not being ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will not be being ${v3}.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => { let aux = (["I", "He", "She", "It"].includes(p)) ? "Was" : "Were"; result.push(`${aux} ${p} being ${v3}?`); });
+                            pronouns.forEach(p => { let aux = (p === "I") ? "Am" : (["He", "She", "It"].includes(p)) ? "Is" : "Are"; result.push(`${aux} ${p} being ${v3}?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} be being ${v3}?`));
+                        }
+                        result.push("");
+                    }
+                    if (tenses.perfect) {
+                        result.push("--- PERFECT (PASSIVE) ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => result.push(`${p} had been ${v3}.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} been ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will have been ${v3}.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => result.push(`${p} had not been ${v3}.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} not been ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will not have been ${v3}.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => result.push(`Had ${p} been ${v3}?`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "Has" : "Have"; result.push(`${aux} ${p} been ${v3}?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} have been ${v3}?`));
+                        }
+                        result.push("");
+                    }
+                    if (tenses.perfectCont) {
+                        result.push("--- PERFECT CONTINUOUS (PASSIVE) ---");
+                        if (mode === 'affirmative') {
+                            pronouns.forEach(p => result.push(`${p} had been being ${v3}.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} been being ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will have been being ${v3}.`));
+                        } else if (mode === 'negative') {
+                            pronouns.forEach(p => result.push(`${p} had not been being ${v3}.`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "has" : "have"; result.push(`${p} ${aux} not been being ${v3}.`); });
+                            pronouns.forEach(p => result.push(`${p} will not have been being ${v3}.`));
+                        } else if (mode === 'question') {
+                            pronouns.forEach(p => result.push(`Had ${p} been being ${v3}?`));
+                            pronouns.forEach(p => { let aux = (["He", "She", "It"].includes(p)) ? "Has" : "Have"; result.push(`${aux} ${p} been being ${v3}?`); });
+                            pronouns.forEach(p => result.push(`Will ${p} have been being ${v3}?`));
+                        }
+                        result.push("");
+                    }
+                }
+                setOutput(result.join('\n'));
+            }, [forms, mode, voice, tenses]);
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 flex flex-col items-center">
+                    <div className="w-full max-w-7xl mb-6 border-b-2 border-orange-600 pb-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-orange-600 p-3 rounded-lg shadow-lg">
+                                <Icon name="Settings" className="w-8 h-8 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-black text-orange-500 tracking-tighter flex items-center gap-2 uppercase italic leading-none">
+                                    GARAGE_V4
+                                </h1>
+                                <p className="text-neutral-500 text-[10px] font-bold tracking-[0.3em] uppercase mt-1">SENTENCE ASSEMBLY ENGINE // SELECTIVE EDITION</p>
+                            </div>
+                        </div>
+                        <div className="text-[10px] text-neutral-500 text-center md:text-right font-bold uppercase space-y-1">
+                            <div>Status: <span className="text-green-500">Operational</span></div>
+                            <div>Drive: <span className="text-orange-500">{voice}</span></div>
+                            <div>Mode: <span className="text-orange-500">{mode}</span></div>
+                        </div>
+                    </div>
+
+                    <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-12 gap-6">
+                        {/* ЛЕВАЯ КОЛОНКА: ВВОД ФОРМ */}
+                        <div className="md:col-span-3 bg-neutral-800 p-6 rounded-2xl border border-neutral-700 shadow-2xl flex flex-col gap-6">
+                            <div className="flex justify-between items-center border-b border-neutral-700 pb-2">
+                                <h2 className="text-xs font-black text-neutral-300 flex items-center gap-2 uppercase tracking-widest">
+                                    <Icon name="Wrench" className="w-4 h-4 text-orange-500" /> Запчасти
+                                </h2>
+                                <div className="flex gap-2">
+                                    <button onClick={loadExample} className="text-[8px] bg-neutral-700 hover:bg-neutral-600 px-2 py-1 rounded-md text-orange-400 font-bold uppercase transition-all">Test</button>
+                                    <button onClick={clearForms} className="text-[8px] bg-neutral-900 hover:bg-red-900/40 px-2 py-1 rounded-md text-red-500 font-bold uppercase transition-all">Сброс</button>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-4">
+                                {[
+                                    { id: 'v1', label: 'Base (V1)', placeholder: 'drive' },
+                                    { id: 'v2', label: 'Past Simple (V2)', placeholder: 'drove' },
+                                    { id: 'v3', label: 'Participle (V3)', placeholder: 'driven' },
+                                    { id: 'ving', label: 'Continuous (V-ing)', placeholder: 'driving' },
+                                    { id: 'vs', label: '3rd Person (s)', placeholder: 'drives' }
+                                ].map((field) => (
+                                    <div key={field.id} className="group">
+                                        <label className="block text-[9px] text-orange-500 font-black mb-1 uppercase tracking-tighter opacity-70">
+                                            {field.label}
+                                        </label>
+                                        <input
+                                            name={field.id}
+                                            value={forms[field.id]}
+                                            onChange={handleInput}
+                                            placeholder={field.placeholder}
+                                            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl p-3 text-white text-xs focus:border-orange-500 focus:outline-none transition-all placeholder-neutral-800 font-bold"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* ПРАВАЯ КОЛОНКА: УПРАВЛЕНИЕ И ВЫВОД */}
+                        <div className="md:col-span-9 flex flex-col gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* ПРИВОД */}
+                                <div className="bg-neutral-800 p-4 rounded-2xl border border-neutral-700 shadow-xl">
+                                    <h2 className="text-[9px] text-neutral-500 mb-3 uppercase tracking-[0.2em] font-black flex items-center gap-2">
+                                        <Icon name="ArrowRightLeft" className="w-3 h-3 text-orange-500" /> Привод (Voice)
+                                    </h2>
+                                    <div className="grid grid-cols-2 gap-2 h-8">
+                                        <button onClick={() => setVoice('active')} className={`rounded text-[10px] font-black uppercase transition-all ${voice === 'active' ? 'bg-blue-600 text-white shadow-lg' : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-600'}`}>ACTIVE</button>
+                                        <button onClick={() => setVoice('passive')} className={`rounded text-[10px] font-black uppercase transition-all ${voice === 'passive' ? 'bg-purple-600 text-white shadow-lg' : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-600'}`}>PASSIVE</button>
+                                    </div>
+                                </div>
+
+                                {/* РЕЖИМ */}
+                                <div className="bg-neutral-800 p-4 rounded-2xl border border-neutral-700 shadow-xl">
+                                    <h2 className="text-[9px] text-neutral-500 mb-3 uppercase tracking-[0.2em] font-black">Режим (Mode)</h2>
+                                    <div className="grid grid-cols-3 gap-2 h-8">
+                                        <button onClick={() => setMode('affirmative')} className={`flex items-center justify-center rounded transition-all ${mode === 'affirmative' ? 'bg-green-600 text-white' : 'bg-neutral-700 text-neutral-400 hover:bg-neutral-600'}`}><Icon name="CheckCircle" className="w-4 h-4" /></button>
+                                        <button onClick={() => setMode('question')} className={`flex items-center justify-center rounded transition-all ${mode === 'question' ? 'bg-yellow-600 text-black' : 'bg-neutral-700 text-neutral-400 hover:bg-neutral-600'}`}><Icon name="HelpCircle" className="w-4 h-4" /></button>
+                                        <button onClick={() => setMode('negative')} className={`flex items-center justify-center rounded transition-all ${mode === 'negative' ? 'bg-red-600 text-white' : 'bg-neutral-700 text-neutral-400 hover:bg-neutral-600'}`}><Icon name="AlertTriangle" className="w-4 h-4" /></button>
+                                    </div>
+                                </div>
+
+                                {/* ЦИЛИНДРЫ */}
+                                <div className="bg-neutral-800 p-4 rounded-2xl border border-neutral-700 shadow-xl">
+                                    <h2 className="text-[9px] text-neutral-500 mb-3 uppercase tracking-[0.2em] font-black flex items-center gap-2">
+                                        <Icon name="Layers" className="w-3 h-3 text-orange-500" /> Цилиндры (Tenses)
+                                    </h2>
+                                    <div className="grid grid-cols-4 gap-1 h-8">
+                                        {['simple', 'continuous', 'perfect', 'perfectCont'].map((tense) => (
+                                            <button key={tense} onClick={() => toggleTense(tense)} className={`rounded text-[8px] font-black uppercase transition-all flex flex-col items-center justify-center leading-none ${tenses[tense] ? 'bg-orange-600 text-white shadow-lg border-orange-500' : 'bg-neutral-900 text-neutral-500 hover:bg-neutral-600 border border-neutral-800'}`}>
+                                                {tense === 'perfectCont' ? 'P-CT' : tense.substring(0, 4)}
+                                                <div className={`w-1 h-1 rounded-full mt-0.5 ${tenses[tense] ? 'bg-white' : 'bg-neutral-600'}`}></div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* ОКНО ВЫВОДА */}
+                            <div className="bg-neutral-800 p-6 rounded-3xl border border-neutral-700 shadow-2xl flex-grow flex flex-col relative overflow-hidden h-[500px]">
+                                <div className={`absolute top-0 left-0 w-full h-1 opacity-60 ${voice === 'active' ? 'bg-blue-500' : 'bg-purple-500'}`}></div>
+                                
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-sm font-black text-neutral-300 flex items-center gap-3 uppercase tracking-widest">
+                                        <Icon name="PlayCircle" className={`w-5 h-5 ${mode === 'affirmative' ? 'text-green-500' : mode === 'question' ? 'text-yellow-500' : 'text-red-500'}`} />
+                                        Результат
+                                        <span className={`text-[9px] px-3 py-1 rounded-full border ${voice === 'active' ? 'bg-blue-900/20 text-blue-400 border-blue-900/50' : 'bg-purple-900/20 text-purple-400 border-purple-900/50'}`}>
+                                            {voice.toUpperCase()} DRIVE
+                                        </span>
+                                    </h2>
+                                    <button 
+                                        onClick={copyToClipboard} 
+                                        className={`flex items-center gap-2 text-[10px] font-black px-4 py-2 rounded-xl transition-all active:scale-95 border ${copied ? 'bg-green-600 border-green-400 text-white' : 'bg-neutral-900 hover:border-neutral-500 text-neutral-400 border-neutral-700 shadow-lg'}`}
+                                    >
+                                        {copied ? <Icon name="Check" className="w-3 h-3" /> : <Icon name="Clipboard" className="w-3 h-3" />}
+                                        {copied ? 'ГОТОВО!' : 'КОПИРОВАТЬ'}
+                                    </button>
+                                </div>
+
+                                <textarea
+                                    ref={textAreaRef}
+                                    readOnly
+                                    value={output}
+                                    className={`w-full flex-grow bg-neutral-950 border-2 border-neutral-900 rounded-2xl p-6 font-mono text-sm resize-none focus:outline-none overflow-y-auto leading-relaxed custom-scrollbar ${mode === 'affirmative' ? 'text-green-400' : mode === 'question' ? 'text-yellow-400' : 'text-red-400'} shadow-inner`}
+                                />
+                                
+                                <div className="text-[9px] font-bold text-neutral-600 mt-4 flex justify-between uppercase tracking-widest px-2">
+                                    <div className="flex gap-4">
+                                        <span>Engine: Garage_V4.0</span>
+                                        <span>Status: Operational</span>
+                                    </div>
+                                    <span>Output_Lines: {output ? output.split('\n').filter(l => l.trim()).length : 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 opacity-20 text-center">
+                        <p className="text-[10px] font-black text-neutral-500 uppercase tracking-[1em]">Precision Engineering • Garage V4 Selective • Honest Work</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
