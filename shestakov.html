@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -97,7 +98,7 @@
         };
 
         const App = () => {
-            const [keySource, setKeySource] = useState('auto'); // 'auto' | 'custom'
+            const [keySource, setKeySource] = useState('custom'); // По умолчанию используем пользовательский ключ
             const [userApiKey, setUserApiKey] = useState(localStorage.getItem('jpb_gemini_key') || '');
             const [dnaText, setDnaText] = useState('');
             const [dnaFiles, setDnaFiles] = useState(0);
@@ -113,7 +114,9 @@
             const victimInputRef = useRef(null);
             const keyInputRef = useRef(null);
 
-            const WORKING_MODEL = 'gemini-2.0-flash';
+            // Актуальная рабочая модель Gemini
+            const WORKING_MODEL = 'gemini-2.5-flash';
+            const FALLBACK_MODEL = 'gemini-1.5-flash';
 
             const systemInstruction = `
                 ТЫ — ЕВГЕНИЙ ШЕСТАКОВ В РЕЖИМЕ "СУПЕРЧАРДЖЕР" (5000 ВОЛЬТ).
@@ -191,8 +194,8 @@
                 setIsLoading(true);
                 setError('');
 
-                const callApi = async (attempt = 0) => {
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${WORKING_MODEL}:generateContent?key=${activeKey}`;
+                const callApi = async (modelName, attempt = 0) => {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`;
                     
                     try {
                         const response = await fetch(url, {
@@ -207,24 +210,24 @@
 
                         const data = await response.json();
                         if (!response.ok) {
-                            if (attempt < 5 && response.status === 429) {
+                            if (attempt < 3 && response.status === 429) {
                                 await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
-                                return callApi(attempt + 1);
+                                return callApi(modelName, attempt + 1);
                             }
                             throw new Error(data.error?.message || 'Ошибка API');
                         }
                         return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
                     } catch (err) {
-                        if (attempt < 5) {
-                            await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
-                            return callApi(attempt + 1);
+                        // Если основная модель сбоит/не доступна, пробуем фоллбэк
+                        if (modelName === WORKING_MODEL) {
+                            return callApi(FALLBACK_MODEL, 0);
                         }
                         throw err;
                     }
                 };
 
                 try {
-                    const result = await callApi();
+                    const result = await callApi(WORKING_MODEL);
                     setOutputText(result.replace(/\*/g, '').replace(/#/g, '').trim());
                 } catch (err) {
                     setError(`Разрыв цепи: ${err.message}`);
@@ -276,17 +279,6 @@
                                 {/* ТУМБЛЕР ПЕРЕКЛЮЧЕНИЯ */}
                                 <div className="grid grid-cols-2 bg-zinc-200 p-1 rounded-xl gap-1 text-[10px] font-black uppercase">
                                     <button
-                                        onClick={() => setKeySource('auto')}
-                                        className={`py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                                            keySource === 'auto'
-                                                ? 'bg-red-600 text-white shadow-sm'
-                                                : 'text-zinc-600 hover:text-black'
-                                        }`}
-                                    >
-                                        <Icons.Zap size={12} className={keySource === 'auto' ? 'fill-white' : ''} />
-                                        Мастерская (Авто)
-                                    </button>
-                                    <button
                                         onClick={() => setKeySource('custom')}
                                         className={`py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                                             keySource === 'custom'
@@ -297,6 +289,17 @@
                                         <Icons.Key size={12} />
                                         Мой Ключ
                                     </button>
+                                    <button
+                                        onClick={() => setKeySource('auto')}
+                                        className={`py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                            keySource === 'auto'
+                                                ? 'bg-red-600 text-white shadow-sm'
+                                                : 'text-zinc-600 hover:text-black'
+                                        }`}
+                                    >
+                                        <Icons.Zap size={12} className={keySource === 'auto' ? 'fill-white' : ''} />
+                                        Мастерская (Авто)
+                                    </button>
                                 </div>
 
                                 <input type="file" ref={keyInputRef} onChange={handleKeyUpload} accept=".txt" className="hidden" />
@@ -306,7 +309,7 @@
                                         type="password"
                                         value={userApiKey}
                                         onChange={(e) => { setUserApiKey(e.target.value); localStorage.setItem('jpb_gemini_key', e.target.value); }}
-                                        placeholder="Вставь API ключ..."
+                                        placeholder="Вставь API ключ (AI Studio)..."
                                         className="w-full bg-white border border-zinc-300 p-2 text-xs focus:border-red-600 outline-none rounded-lg shadow-inner transition-all mt-2"
                                     />
                                 ) : (
@@ -457,3 +460,4 @@
     </script>
 </body>
 </html>
+```
