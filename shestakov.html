@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГAPAЖ-01 | Автономная Кувалда v17.1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel для JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,800;1,400;1,800&display=swap');
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            cursor: crosshair;
+            background-color: #ffffff;
+        }
+
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Инициализация PDF.js воркера
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        // Стальные иконки (SVG)
+        const Icons = {
+            Zap: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            ),
+            Skull: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 10L9.01 10"/><path d="M15 10L15.01 10"/><path d="M10 20v-3a2 2 0 1 1 4 0v3"/><path d="M12 2a10 10 0 0 0-10 10c0 1.29.26 2.52.73 3.63L3 22l5.44-1.27A10 10 0 1 0 12 2z"/></svg>
+            ),
+            Loader2: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 12a9 9 0 1 1-6.21-8.58"/></svg>
+            ),
+            Copy: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            ),
+            Check: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 6L9 17l-5-5"/></svg>
+            ),
+            TriangleAlert: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            ),
+            Activity: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            ),
+            Key: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21 2-2 2"/><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+            ),
+            BookOpen: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            ),
+            Target: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            ),
+            Layers: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m2.6 11.33 8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0 1.83l-8.58 3.9a2 2 0 0 0-1.66 0l-8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m2.6 15.65 8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0 1.83l-8.58 3.9a2 2 0 0 0-1.66 0l-8.58-3.9a1 1 0 0 0 0-1.83Z"/></svg>
+            ),
+            Hash: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg>
+            ),
+            AlertCircle: ({ size = 24, className = "" }) => (
+                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            )
+        };
+
+        const App = () => {
+            const [keySource, setKeySource] = useState('auto'); // 'auto' | 'custom'
+            const [userApiKey, setUserApiKey] = useState(localStorage.getItem('jpb_gemini_key') || '');
+            const [dnaText, setDnaText] = useState('');
+            const [dnaFiles, setDnaFiles] = useState(0);
+            const [victimText, setVictimText] = useState('');
+            const [victimFiles, setVictimFiles] = useState(0);
+            const [outputText, setOutputText] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [isParsing, setIsParsing] = useState(null);
+            const [error, setError] = useState('');
+            const [copied, setCopied] = useState(false);
+            
+            const dnaInputRef = useRef(null);
+            const victimInputRef = useRef(null);
+            const keyInputRef = useRef(null);
+
+            const WORKING_MODEL = 'gemini-2.0-flash';
+
+            const systemInstruction = `
+                ТЫ — ЕВГЕНИЙ ШЕСТАКОВ В РЕЖИМЕ "СУПЕРЧАРДЖЕР" (5000 ВОЛЬТ).
+                У тебя есть два источника данных: "ДНК СТИЛЯ" и "ЖЕРТВА".
+
+                ТВОЯ ЗАДАЧА:
+                1. Проанализируй "ДНК СТИЛЯ". Впитай манеру, словарь, ритм и ядовитость этого автора. Стань им. Не пересказывай его, а используй его ДНК как топливо.
+                2. Используя впитанную манеру и свой классический Шестаковский натиск, полностью перепиши текст "ЖЕРТВЫ".
+                3. ПРИНЦИП "ПОКАЗЫВАНИЕ": Никакого информирования. Наращивай мясо на скелет "Жертвы". Окружай центральную мысль армадой образов.
+                4. РИТМ И ГРАДИЕНТЫ: Американские горки. Пулеметная очередь коротких фраз. Бешеное сжатие смыслов в точку и растягивание до бесконечности.
+                5. Используй экспрессивные выражения, если это придает тексту нужную шершавость.
+
+                ОБЯЗАТЕЛЬНО:
+                - Сохраняй термины: F-оператор, Орех, Мотолок.
+                - ПОКАЗЫВАЙ ФИЗИКУ. Хруст, визг, вонь, искры.
+
+                ЗАПРЕТЫ: НИКАКИХ КЛИШЕ. НИКАКОЙ РАЗМЕТКИ (MARKDOWN). НИКАКОЙ ВЕЖЛИВОСТИ.
+            `;
+
+            const handleKeyUpload = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const key = e.target.result.trim();
+                    setUserApiKey(key);
+                    localStorage.setItem('jpb_gemini_key', key);
+                };
+                reader.readAsText(file);
+            };
+
+            const handlePdfUpload = async (event, target) => {
+                const files = Array.from(event.target.files);
+                if (!files.length) return;
+                setIsParsing(target);
+                setError('');
+                
+                let combinedText = target === 'dna' ? dnaText : victimText;
+                let count = target === 'dna' ? dnaFiles : victimFiles;
+
+                try {
+                    for (const file of files) {
+                        if (file.type !== 'application/pdf') continue;
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                        let text = '';
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(' ') + '\n\n';
+                        }
+                        combinedText = combinedText ? combinedText + "\n\n" + text.trim() : text.trim();
+                        count++;
+                    }
+                    
+                    if (target === 'dna') {
+                        setDnaText(combinedText);
+                        setDnaFiles(count);
+                    } else {
+                        setVictimText(combinedText);
+                        setVictimFiles(count);
+                    }
+                } catch (err) {
+                    setError(`Ошибка вскрытия: ${err.message}`);
+                } finally {
+                    setIsParsing(null);
+                }
+            };
+
+            const processText = async () => {
+                const activeKey = keySource === 'auto' ? '' : userApiKey.trim();
+                if (keySource === 'custom' && !activeKey) { setError('ГДЕ КЛЮЧ? БАК ПУСТ!'); return; }
+                if (!victimText.trim()) { setError('ГДЕ ЖЕРТВА? ВЕРСТАК ПУСТ!'); return; }
+
+                setIsLoading(true);
+                setError('');
+
+                const callApi = async (attempt = 0) => {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${WORKING_MODEL}:generateContent?key=${activeKey}`;
+                    
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: `ДНК СТИЛЯ:\n${dnaText || "Используй свой стандартный стиль"}\n\nЖЕРТВА:\n${victimText}\n\nЗАДАНИЕ: ПЕРЕПИШИ ЖЕРТВУ.` }] }],
+                                systemInstruction: { parts: [{ text: systemInstruction }] },
+                                generationConfig: { temperature: 1.0, maxOutputTokens: 8192 }
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (!response.ok) {
+                            if (attempt < 5 && response.status === 429) {
+                                await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+                                return callApi(attempt + 1);
+                            }
+                            throw new Error(data.error?.message || 'Ошибка API');
+                        }
+                        return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    } catch (err) {
+                        if (attempt < 5) {
+                            await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+                            return callApi(attempt + 1);
+                        }
+                        throw err;
+                    }
+                };
+
+                try {
+                    const result = await callApi();
+                    setOutputText(result.replace(/\*/g, '').replace(/#/g, '').trim());
+                } catch (err) {
+                    setError(`Разрыв цепи: ${err.message}`);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const copyResult = () => {
+                const el = document.createElement('textarea');
+                el.value = outputText;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 bg-white">
+                    <div className="max-w-6xl mx-auto space-y-6">
+                        
+                        {/* Шапка */}
+                        <header className="border-b-4 border-red-600 pb-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="flex items-center gap-4">
+                                <div className="p-4 bg-yellow-400 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-pulse">
+                                    <Icons.Zap size={40} className="text-black fill-black" />
+                                </div>
+                                <div className="text-left">
+                                    <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none text-black">ГAPAЖ-01</h1>
+                                    <p className="text-[10px] text-red-600 font-bold uppercase tracking-[0.3em] mt-1 italic underline decoration-black underline-offset-4">v17.1 INSTRUMENTS</p>
+                                </div>
+                            </div>
+                            
+                            <div className="w-full md:w-96 space-y-2 text-left bg-zinc-50 border-2 border-zinc-200 p-3 rounded-2xl">
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className="text-[9px] font-black uppercase text-zinc-500 block tracking-widest italic">Источник Питания API</label>
+                                    {keySource === 'custom' && (
+                                        <button 
+                                            onClick={() => keyInputRef.current?.click()}
+                                            className="text-[9px] font-black uppercase text-red-600 hover:underline flex items-center gap-1"
+                                        >
+                                            <Icons.Key size={10} /> .txt Ключ
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* ТУМБЛЕР ПЕРЕКЛЮЧЕНИЯ */}
+                                <div className="grid grid-cols-2 bg-zinc-200 p-1 rounded-xl gap-1 text-[10px] font-black uppercase">
+                                    <button
+                                        onClick={() => setKeySource('auto')}
+                                        className={`py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                            keySource === 'auto'
+                                                ? 'bg-red-600 text-white shadow-sm'
+                                                : 'text-zinc-600 hover:text-black'
+                                        }`}
+                                    >
+                                        <Icons.Zap size={12} className={keySource === 'auto' ? 'fill-white' : ''} />
+                                        Мастерская (Авто)
+                                    </button>
+                                    <button
+                                        onClick={() => setKeySource('custom')}
+                                        className={`py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                            keySource === 'custom'
+                                                ? 'bg-black text-white shadow-sm'
+                                                : 'text-zinc-600 hover:text-black'
+                                        }`}
+                                    >
+                                        <Icons.Key size={12} />
+                                        Мой Ключ
+                                    </button>
+                                </div>
+
+                                <input type="file" ref={keyInputRef} onChange={handleKeyUpload} accept=".txt" className="hidden" />
+
+                                {keySource === 'custom' ? (
+                                    <input 
+                                        type="password"
+                                        value={userApiKey}
+                                        onChange={(e) => { setUserApiKey(e.target.value); localStorage.setItem('jpb_gemini_key', e.target.value); }}
+                                        placeholder="Вставь API ключ..."
+                                        className="w-full bg-white border border-zinc-300 p-2 text-xs focus:border-red-600 outline-none rounded-lg shadow-inner transition-all mt-2"
+                                    />
+                                ) : (
+                                    <div className="text-[9px] font-bold text-green-700 bg-green-50 border border-green-200 p-2 rounded-lg mt-2 flex items-center gap-2 italic">
+                                        <Icons.Check size={12} className="text-green-600" /> ПИТАНИЕ ОТ МАСТЕРСКОЙ ВКЛЮЧЕНО (АВТО-ТОК)
+                                    </div>
+                                )}
+                            </div>
+                        </header>
+
+                        {/* Индикатор */}
+                        <div className="bg-yellow-50 border-l-4 border-red-600 p-3 flex items-center gap-3">
+                            <Icons.TriangleAlert size={20} className="text-red-600" />
+                            <span className="text-[10px] font-black uppercase text-zinc-600 tracking-wider">ПРИБОРЫ ВКЛЮЧЕНЫ. КОНТРОЛИРУЙ ОБЪЕМ СЫРЬЯ.</span>
+                        </div>
+
+                        {/* Рабочая зона */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-6 text-left">
+                                {/* БАК 1: ДНК */}
+                                <div className="bg-white border-2 border-blue-500 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(59,130,246,1)]">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-[10px] font-black uppercase text-blue-500 flex items-center gap-2 italic">
+                                            <Icons.BookOpen size={14} /> Питание (ДНК Стиля)
+                                        </span>
+                                        <div className="flex gap-3">
+                                            <button onClick={() => { setDnaText(''); setDnaFiles(0); }} className="text-[10px] font-black uppercase text-slate-300 hover:text-red-500">Очистить</button>
+                                            <button onClick={() => dnaInputRef.current?.click()} className="text-[10px] font-black uppercase text-blue-500 underline decoration-2">Вскрыть PDF</button>
+                                        </div>
+                                    </div>
+                                    <textarea
+                                        value={dnaText}
+                                        onChange={(e) => setDnaText(e.target.value)}
+                                        className="w-full h-32 bg-slate-50 border-2 border-slate-100 rounded-xl p-4 text-xs focus:border-blue-500 outline-none resize-none transition-all"
+                                        placeholder="Загрузи тексты автора для подражания..."
+                                    />
+                                    <div className="mt-2 flex items-center gap-4 text-[9px] font-black uppercase text-blue-400 italic">
+                                        <span className="flex items-center gap-1"><Icons.Layers size={10} /> Файлов: {dnaFiles}</span>
+                                        <span className="flex items-center gap-1"><Icons.Hash size={10} /> Знаков: {dnaText.length}</span>
+                                    </div>
+                                    {isParsing === 'dna' && <p className="text-[9px] font-bold text-blue-500 mt-1 animate-pulse italic">Всасываем руду...</p>}
+                                </div>
+
+                                {/* БАК 2: ЖЕРТВА */}
+                                <div className="bg-white border-2 border-red-600 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(220,38,38,1)]">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-[10px] font-black uppercase text-red-600 flex items-center gap-2 italic">
+                                            <Icons.Target size={14} /> Жертва (Мясо)
+                                        </span>
+                                        <div className="flex gap-3">
+                                            <button onClick={() => { setVictimText(''); setVictimFiles(0); }} className="text-[10px] font-black uppercase text-slate-300 hover:text-red-500">Очистить</button>
+                                            <button onClick={() => victimInputRef.current?.click()} className="text-[10px] font-black uppercase text-red-600 underline decoration-2">Вскрыть PDF</button>
+                                        </div>
+                                    </div>
+                                    <textarea
+                                        value={victimText}
+                                        onChange={(e) => setVictimText(e.target.value)}
+                                        className="w-full h-80 lg:h-[450px] bg-white border-2 border-slate-100 rounded-xl p-5 text-sm focus:border-red-600 outline-none resize-none transition-all text-black"
+                                        placeholder="Вставь сюда свой скелет..."
+                                    />
+                                    <div className="mt-2 flex items-center gap-4 text-[9px] font-black uppercase text-red-400 italic">
+                                        <span className="flex items-center gap-1"><Icons.Layers size={10} /> Файлов: {victimFiles}</span>
+                                        <span className="flex items-center gap-1"><Icons.Hash size={10} /> Знаков: {victimText.length}</span>
+                                    </div>
+                                    {isParsing === 'victim' && <p className="text-[9px] font-bold text-red-600 mt-1 animate-pulse italic">Вскрываем тело...</p>}
+                                </div>
+                            </div>
+
+                            {/* ВЫХОД */}
+                            <div className="space-y-3 text-left">
+                                <div className="flex items-center justify-between px-1">
+                                    <div className="flex items-center gap-2">
+                                        <Icons.Activity size={16} className="text-red-600" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 italic">Разряд</span>
+                                    </div>
+                                    {outputText && (
+                                        <button onClick={copyResult} className="text-[10px] font-black uppercase flex items-center gap-2 hover:text-red-600 transition-colors">
+                                            {copied ? <Icons.Check size={12} className="text-green-600" /> : <Icons.Copy size={12} />}
+                                            {copied ? 'ЗАБРАЛ' : 'КОПИЯ'}
+                                        </button>
+                                    )}
+                                </div>
+                                <div className={`w-full h-[650px] lg:h-[700px] rounded-[2.5rem] p-8 overflow-y-auto border-4 border-black relative transition-all ${
+                                    isLoading ? 'bg-zinc-50 border-zinc-200' : 'bg-white border-black shadow-[10px_10px_0px_0px_rgba(220,38,38,1)]'
+                                }`}>
+                                    {isLoading ? (
+                                        <div className="h-full flex flex-col items-center justify-center gap-6">
+                                            <div className="relative">
+                                                <Icons.Loader2 size={64} className="animate-spin text-red-600" />
+                                                <Icons.Zap size={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-500 fill-yellow-500 animate-ping" />
+                                            </div>
+                                            <span className="text-[11px] font-mono uppercase font-black tracking-[0.4em] text-red-600 animate-pulse text-center leading-loose">
+                                                ПЕРЕРАБОТКА...<br/>ВЫЖИГАЕМ СМЫСЛЫ...
+                                            </span>
+                                        </div>
+                                    ) : outputText ? (
+                                        <div className="whitespace-pre-wrap text-black font-sans font-medium leading-relaxed text-sm italic-none">{outputText}</div>
+                                    ) : (
+                                        <div className="h-full flex flex-col items-center justify-center opacity-10 grayscale">
+                                            <Icons.Skull size={96} className="mb-4 text-black" />
+                                            <p className="text-[10px] font-black uppercase tracking-widest italic text-center">Жду детонации</p>
+                                        </div>
+                                    )}
+                                </div>
+                                {outputText && (
+                                    <div className="px-6 flex items-center gap-1 text-[9px] font-black uppercase text-zinc-400 italic">
+                                        <Icons.Hash size={10} /> Знаков в ответе: {outputText.length}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* ГЛАВНАЯ КНОПКА */}
+                        <div className="pt-2">
+                            <button
+                                onClick={processText}
+                                disabled={isLoading || isParsing}
+                                className={`w-full py-10 text-2xl font-black uppercase tracking-[1em] transition-all border-4 border-black rounded-[50px] active:translate-x-2 active:translate-y-2 active:shadow-none ${
+                                    isLoading ? 'bg-zinc-100 border-zinc-200 text-zinc-300 cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-500 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]'
+                                }`}
+                            >
+                                {isLoading ? 'РАЗРЯД!' : 'УДАРИТЬ ТОКОМ'}
+                            </button>
+                        </div>
+
+                        {error && (
+                            <div className="bg-red-50 border-4 border-red-600 p-6 rounded-3xl flex items-center gap-5 animate-shake">
+                                <Icons.AlertCircle size={32} className="text-red-600 shrink-0" />
+                                <div className="text-left">
+                                    <p className="text-[11px] font-black uppercase text-red-800 italic tracking-widest">КОРОТКОЕ ЗАМЫКАНИЕ:</p>
+                                    <p className="text-[10px] text-red-600 font-bold uppercase">{error}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        <footer className="text-[10px] text-zinc-400 text-center uppercase tracking-[0.8em] pt-8 pb-12 border-t border-zinc-100 italic">
+                            ГAPAЖ-01 | INSTRUMENTS v17.1 | 2026
+                        </footer>
+                    </div>
+                    <input type="file" ref={dnaInputRef} onChange={(e) => handlePdfUpload(e, 'dna')} accept=".pdf" className="hidden" />
+                    <input type="file" ref={victimInputRef} onChange={(e) => handlePdfUpload(e, 'victim')} accept=".pdf" className="hidden" />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
