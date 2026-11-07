@@ -80,7 +80,7 @@
             color: #888;
         }
     </style>
-    <!-- Подключаем библиотеку ResponsiveVoice для стабильного синтеза и скачивания -->
+    <!-- Подключаем библиотеку ResponsiveVoice -->
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=free"></script>
 </head>
 <body>
@@ -91,6 +91,7 @@
     <div class="controls">
         <button class="primary" id="playBtn" onclick="toggleSpeech()">▶ Озвучить текст</button>
         <button onclick="stopSpeech()">⏹ Стоп</button>
+        <button onclick="downloadAudioFile()">📥 Скачать MP3</button>
         <button onclick="downloadTxt()">📥 Скачать как TXT</button>
     </div>
 
@@ -146,6 +147,30 @@
             responsiveVoice.cancel();
             playBtn.innerText = "▶ Озвучить текст";
             statusDiv.innerText = "Статус: Остановлено";
+        }
+    }
+
+    // Функция скачивания аудиофайла напрямую по ссылке движка
+    function downloadAudioFile() {
+        const text = textElement.innerText;
+        statusDiv.innerText = "Статус: Генерация аудиофайла для скачивания...";
+
+        try {
+            // Получаем прямую ссылку на MP3-файл от сервиса озвучки
+            const audioUrl = responsiveVoice.getAudioUrl(text, "Russian Female");
+
+            // Создаем временную ссылку для скачивания
+            const a = document.createElement('a');
+            a.href = audioUrl;
+            a.download = 'harmony_and_algebra.mp3';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            statusDiv.innerText = "Статус: Аудиофайл успешно скачан!";
+        } catch (error) {
+            console.error(error);
+            statusDiv.innerText = "Статус: Ошибка при скачивании аудио.";
         }
     }
 
