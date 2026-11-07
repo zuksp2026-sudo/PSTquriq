@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гармония и алгебра живого — Озвучка</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --btn-bg: #333;
+            --btn-hover: #444;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-top: 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: var(--btn-bg);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: var(--btn-hover);
+        }
+        button.primary {
+            background-color: var(--accent-color);
+            color: #121212;
+        }
+        button.primary:hover {
+            opacity: 0.9;
+        }
+        .content {
+            white-space: pre-wrap;
+            background: #181818;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h1>Гармония и алгебра живого (Резюме)</h1>
+    
+    <div class="controls">
+        <button class="primary" id="playBtn" onclick="toggleSpeech()">▶ Озвучить текст</button>
+        <button onclick="stopSpeech()">⏹ Стоп</button>
+        <button onclick="downloadTxt()">📥 Скачать как TXT</button>
+    </div>
+
+    <div class="content" id="textContent">Книга «Гармония и алгебра живого» (1990 г.), написанная биологом Г. А. Голицыным и физиком-математиком В. М. Петровым, представляет собой попытку построения единой фундаментальной теории биологии и поведения на основе точных математических методов и теории информации.
+
+Ниже приведено подробное резюме книги и изложение её ключевых тезисов.
+
+Общее резюме
+
+Авторы исходят из концепции централизации научных теорий: по аналогии с физикой, где разнородные явления выводятся из единых экстремальных (вариационных) принципов (например, принципа наименьшего действия в механике или принципа Ферма в оптике), теория биологических систем должна опираться на базовый критерий оптимальности. В качестве такого единого фундамента они предлагают принцип максимума информации.
+
+В книге последовательно доказывается, что живой организм — целенаправленная система, стремящаяся максимально согласовать свои реакции с воздействиями внешней среды с учётом ресурсных ограничений.</div>
+</div>
+
+<script>
+    const textElement = document.getElementById('textContent');
+    const playBtn = document.getElementById('playBtn');
+    let synth = window.speechSynthesis;
+    let utterance = null;
+
+    function toggleSpeech() {
+        if (synth.speaking) {
+            if (synth.paused) {
+                synth.resume();
+                playBtn.innerText = "⏸ Пауза";
+            } else {
+                synth.pause();
+                playBtn.innerText = "▶ Продолжить";
+            }
+            return;
+        }
+
+        const text = textElement.innerText;
+        utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ru-RU';
+        utterance.rate = 1.0;
+
+        utterance.onend = function() {
+            playBtn.innerText = "▶ Озвучить текст";
+        };
+
+        playBtn.innerText = "⏸ Пауза";
+        synth.speak(utterance);
+    }
+
+    function stopSpeech() {
+        if (synth) {
+            synth.cancel();
+            playBtn.innerText = "▶ Озвучить текст";
+        }
+    }
+
+    function downloadTxt() {
+        const text = textElement.innerText;
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'harmony_and_algebra.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+</body>
+</html>
