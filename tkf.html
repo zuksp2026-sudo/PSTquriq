@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TKF License: PST — Full Crystal</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['$$', '$$']],
+    processEscapes: true
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root { --ink:#1a202c; --muted:#4a5568; --line:#e2e8f0; --accent:#2b6cb0; --bg:#ffffff; --card:#f8fafc; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.65 Georgia, 'Times New Roman', serif; }
+main { max-width:920px; margin:0 auto; padding:48px 20px 80px; }
+h1 { font-size:2.1rem; line-height:1.25; margin:0 0 8px; }
+.byline { color:var(--muted); margin:0 0 28px; font-size:.95rem; }
+h2 { font-size:1.4rem; margin:42px 0 14px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+h3 { font-size:1.1rem; margin:28px 0 10px; }
+p, li { margin:0 0 14px; }
+.box { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:8px; padding:18px 20px; margin:24px 0; }
+.abstract { background:#f0f7ff; }
+.theorem { border-left-color:#2b6cb0; }
+.remark { background:#fffaf0; border-left-color:#d69e2e; }
+ul, ol { padding-left:26px; }
+a { color:var(--accent); }
+table { width:100%; border-collapse:collapse; margin:20px 0; font-size:.95rem; }
+th, td { border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top; }
+th { background:var(--card); }
+footer { margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+.MathJax { overflow-x:auto; overflow-y:hidden; }
+</style>
+</head>
+<body>
+<main>
+<h1>TKF License: PST — Full Crystal</h1>
+<p class="byline">Spartac Cebanu · July 2026</p>
+
+<div class="box abstract">
+<p><strong>Identity of the three notations.</strong> The same five-node process chain can be written in three equivalent languages:</p>
+
+$$
+x\to\nabla F\to F\to F'\to y
+\;\equiv\;
+Q_1\to U\to R\to I\to Q_2
+\;\equiv\;
+\Phi_z\text{–}\Phi_o\text{–}\Phi_z\text{–}\Phi_o.
+$$
+
+<p>This page records the categorical interpretation of that identity: why category theory can be applied to PST transitions, how \(\varepsilon\) and \(\eta\) operate differently across the four transitions, and why the macro-level alternation and the palindrome are two expressions of one law.</p>
+</div>
+
+<h2>1. The five-node chain</h2>
+
+<table>
+<thead>
+<tr><th>Physics</th><th>PST</th><th>Node type</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>\(x\)</td><td>\(Q_1\)</td><td>Object</td><td>Initial state with surplus entropy or uncertainty.</td></tr>
+<tr><td>\(\nabla F\)</td><td>\(U\)</td><td>Projection</td><td>Gradient, traction vector, or tension of non-fit; the causal trigger.</td></tr>
+<tr><td>\(F\)</td><td>\(R\)</td><td>Object</td><td>Structure: coordinate grid, attractor, law, or minimal assembly.</td></tr>
+<tr><td>\(F'\)</td><td>\(I\)</td><td>Projection</td><td>Dynamic realization of structure in time; the flux.</td></tr>
+<tr><td>\(y\)</td><td>\(Q_2\)</td><td>Object</td><td>Accumulated outcome, autonomous product, or crystallized result.</td></tr>
+</tbody>
+</table>
+
+<p>The four morphisms \(\pi_1,\pi_2,\pi_3,\pi_4\) are strictly directed arrows. Removing one link breaks the chain and can leave the system in destructive chaos or immobilize it.</p>
+
+<h2>2. The O–P–O–P–O law</h2>
+<p>The chain has a rigid type structure: <strong>Object–Projection–Object–Projection–Object</strong>. Each edge must change type, which forces the alternation of the two operations.</p>
+
+<table>
+<thead>
+<tr><th>Edge</th><th>Transition</th><th>Type</th><th>Operation</th></tr>
+</thead>
+<tbody>
+<tr><td>\(\pi_1:Q_1\to U\)</td><td>Object \(\to\) Projection</td><td>\(\Phi_z\)</td><td>Strip the object to its vector: extract the gradient or function.</td></tr>
+<tr><td>\(\pi_2:U\to R\)</td><td>Projection \(\to\) Object</td><td>\(\Phi_o\)</td><td>Clothe the vector: design and minimally assemble a structure.</td></tr>
+<tr><td>\(\pi_3:R\to I\)</td><td>Object \(\to\) Projection</td><td>\(\Phi_z\)</td><td>Remove what obstructs flow; pass through the channel.</td></tr>
+<tr><td>\(\pi_4:I\to Q_2\)</td><td>Projection \(\to\) Object</td><td>\(\Phi_o\)</td><td>Package and release the product into the external environment.</td></tr>
+</tbody>
+</table>
+
+<p>Thus the macro-chain is:</p>
+
+$$
+\Phi_z\to\Phi_o\to\Phi_z\to\Phi_o.
+$$
+
+<p>The existence of the whole construction requires \(x\neq y\). If there is change, there is process; if there is process, all five nodes and four morphisms are required.</p>
+
+<div class="box">
+<p><strong>Algebraic form.</strong> The projection vector exists only relative to a fixed difference between the initial and final states:</p>
+
+$$
+U=\frac{A}{Q_1-Q_2}.
+$$
+</div>
+
+<h2>3. Two categories</h2>
+<ul>
+<li><strong>\(\mathcal P\) — the category of projections:</strong> bare vectors, functions, gradients, and abstract functional forms.</li>
+<li><strong>\(\mathcal O\) — the category of objects:</strong> material assemblies, constructions in an environment, and crystallized products.</li>
+</ul>
+
+<h2>4. Two functors</h2>
+
+<div class="box">
+<p><strong>\(\Phi_z:\mathcal O\to\mathcal P\) — the forgetting functor.</strong> It removes inessential material detail and retains the functional essence: the “barber” operation that strips an object to its vector.</p>
+<p>Its functoriality has been tested: the stripping of a composition equals the composition of strippings.</p>
+</div>
+
+<div class="box">
+<p><strong>\(\Phi_o:\mathcal P\to\mathcal O\) — the free functor.</strong> It clothes a vector in a minimal material construction, using low-cost resources available in the environment: gravity, geometry, natural flows, or thermal equilibrium.</p>
+<p>Its functoriality follows from the universal property of the initial object \(R_{\min}\).</p>
+</div>
+
+<h2>5. The adjunction \(\Phi_o\dashv\Phi_z\)</h2>
+
+<div class="box theorem">
+<p><strong>Adjunction.</strong> The free functor is left-adjoint to the forgetting functor:</p>
+
+$$
+\Phi_o\dashv\Phi_z.
+$$
+
+<p>Equivalently, for a projection \(u\) and an object \(X\),</p>
+
+$$
+\operatorname{Hom}_{\mathcal P}\bigl(u,\Phi_zX\bigr)
+\cong
+\operatorname{Hom}_{\mathcal O}\bigl(\Phi_ou,X\bigr).
+$$
+</div>
+
+<p>In plain language:</p>
+<ul>
+<li><strong>Resonance</strong> is an element of \(\operatorname{Hom}_{\mathcal P}(u,\Phi_zX)\): a bare vector fits an existing gradient of the environment.</li>
+<li><strong>Connection</strong> is an element of \(\operatorname{Hom}_{\mathcal O}(\Phi_ou,X)\): a minimal material assembly fits into the environment.</li>
+<li>The adjunction says that every resonance corresponds to exactly one minimal connection, and conversely.</li>
+</ul>
+
+<p>This is why the \(R\text{–}I\) test works: checking resonance in the world of vectors and checking connectability in the world of objects are not two separate tests, but one test related by a bijection.</p>
+
+<h2>6. \(\eta\) and \(\varepsilon\)</h2>
+
+<table>
+<thead>
+<tr><th>Operator</th><th>Formula</th><th>Lives in</th><th>Methodological name</th><th>Function</th></tr>
+</thead>
+<tbody>
+<tr><td>\(\eta\) — unit</td><td>\(\eta:\mathrm{Id}_{\mathcal P}\Rightarrow\Phi_z\circ\Phi_o\)</td><td>\(\mathcal P\)</td><td>Project / blueprint</td><td>An embedding morphism: it looks forward and establishes future connections and boundaries.</td></tr>
+<tr><td>\(\varepsilon\) — counit</td><td>\(\varepsilon:\Phi_o\circ\Phi_z\Rightarrow\mathrm{Id}_{\mathcal O}\)</td><td>\(\mathcal O\)</td><td>Model / template / simulator</td><td>An evaluation morphism: it compares reality with essence, removes noise, and tests invariants.</td></tr>
+</tbody>
+</table>
+
+<h2>7. \(R_{\min}\) as an initial object</h2>
+
+<div class="box theorem">
+<p><strong>Initial object.</strong> \(R_{\min}\) is an initial object in the category of all possible clothings of a vector \(u\). Every working solution that carries the vector receives exactly one arrow from the minimal assembly.</p>
+</div>
+
+<p>Consequences:</p>
+<ul>
+<li>Functoriality of \(\Phi_o\) follows automatically from the universal property.</li>
+<li>\(R_{\min}\) is not merely an aesthetic ideal; it is the mathematically fundamental solution.</li>
+<li>An overbuilt solution is a morphism from a non-free object: it may exist materially, but it is not covered by the Hom-bijection and pays for the excess through friction.</li>
+</ul>
+
+<h2>8. How \(\varepsilon\) and \(\eta\) work on the four transitions</h2>
+
+<p>The operators are not fixed labels. Their role changes according to the transition and according to whether one observes the macro-chain or the internal meso-structure of a single transition.</p>
+
+<table>
+<thead>
+<tr><th>Transition</th><th>Operator</th><th>Macro action</th><th>Meso action</th><th>Engineering meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>\(Q_1\to U\)</td><td>\(\varepsilon\)</td><td>Disconnection</td><td>Template for noise removal</td><td>Strip external noise and isolate the clean task.</td></tr>
+<tr><td>\(U\to R\)</td><td>\(\eta\)</td><td>Connection</td><td>Blueprint for integration</td><td>Design the minimal connection or form required by the task.</td></tr>
+<tr><td>\(R\to I\)</td><td>\(\varepsilon\)</td><td>Connection</td><td>Simulator / stability test</td><td>Connect the structure to a test load and verify that it sustains flow.</td></tr>
+<tr><td>\(I\to Q_2\)</td><td>\(\eta\)</td><td>Disconnection</td><td>Blueprint for release</td><td>Design the controlled separation of the product from its maker or support system.</td></tr>
+</tbody>
+</table>
+
+<p>At the macro level, the sequence is therefore:</p>
+
+$$
+\varepsilon\text{-disconnect}
+\longrightarrow
+\eta\text{-connect}
+\longrightarrow
+\varepsilon\text{-connect}
+\longrightarrow
+\eta\text{-disconnect}.
+$$
+
+<h3>Transition 1: \(Q_1\to U\) — \(\varepsilon\)-disconnection</h3>
+<p>The forgetting functor operates. A template is applied to the environment’s noise: contextual debris, inherited assumptions, and unnecessary complexity are removed. The result is a clean model of the governing task.</p>
+
+<h3>Transition 2: \(U\to R\) — \(\eta\)-connection</h3>
+<p>The free functor operates. A blueprint specifies how the extracted vector will be materialized as a minimal structure, using available low-cost resources in the environment.</p>
+
+<h3>Transition 3: \(R\to I\) — \(\varepsilon\)-connection</h3>
+<p>The structure must become a working flow. Here \(\varepsilon\) does not merely strip noise; it acts as a simulator or quality-control device. The system is temporarily connected to a test load or test circuit to determine whether the structure can sustain the required flow.</p>
+
+<h3>Transition 4: \(I\to Q_2\) — \(\eta\)-disconnection</h3>
+<p>The product must become autonomous. Here \(\eta\) designs the controlled break from the old supporting system: the workshop, author, prototype, or external power source. The system is released into independent operation.</p>
+
+<div class="box remark">
+<p><strong>The palindrome.</strong> At the macro level, the edges alternate as \(\Phi_z\text{–}\Phi_o\text{–}\Phi_z\text{–}\Phi_o\), and the operators alternate as \(\varepsilon\text{–}\eta\text{–}\varepsilon\text{–}\eta\). At the meso level, each transition unfolds as a two-step transaction, producing the palindrome:</p>
+
+$$
+\varepsilon\to\eta\to\eta\to\varepsilon.
+$$
+
+<p>The macro pattern is generated by <strong>translation</strong>: each step changes the edge type. The palindrome is generated by <strong>reflection</strong>: the boundary edges release, while the internal edges connect.</p>
+</div>
+
+<h2>9. The four-phase transaction</h2>
+
+<table>
+<thead>
+<tr><th>Operator \(\times\) action</th><th>Disconnection</th><th>Connection</th></tr>
+</thead>
+<tbody>
+<tr><td>\(\varepsilon\) — evaluation / model</td><td><strong>Step 1:</strong> noise-cutting template</td><td><strong>Step 4:</strong> autonomy test and release</td></tr>
+<tr><td>\(\eta\) — embedding / project</td><td><strong>Step 2:</strong> disassembly or isolation blueprint</td><td><strong>Step 3:</strong> integration or assembly blueprint</td></tr>
+</tbody>
+</table>
+
+<ol>
+<li><strong>\(\varepsilon\)-disconnection:</strong> remove noise and isolate the governing function.</li>
+<li><strong>\(\eta\)-disconnection:</strong> design how the system will safely separate from its previous context.</li>
+<li><strong>\(\eta\)-connection:</strong> design how the minimal structure will integrate into the new environment.</li>
+<li><strong>\(\varepsilon\)-connection:</strong> test whether the assembled system can operate autonomously.</li>
+</ol>
+
+<p>If one connects or assembles before the unnecessary material has been removed, the result tends to become overloaded, expensive, and non-viable. Observing the palindrome helps the system reach \(R_{\min}\).</p>
+
+<h2>10. The \(R\text{–}I\) PST analysis protocol</h2>
+<ol>
+<li>Define the governing useful function and its gradient in the supersystem.</li>
+<li>Split the process along the chain \(Q_1\to U\to R\to I\to Q_2\).</li>
+<li>Type each edge according to the \(\Phi_z\text{–}\Phi_o\) law.</li>
+<li>Fill the edge matrix and examine its fractal micro-structure.</li>
+<li>Sort findings into boundary collapses, transferred elements, and newly discovered elements.</li>
+<li>Stress-test the result against independent material.</li>
+<li>Decide whether the result is resonant or requires reassembly.</li>
+<li>Move to the next edge until the entire domain is covered.</li>
+</ol>
+
+<h2>11. Verification registry</h2>
+<ul>
+<li><strong>Cross-domain tests:</strong> grammar and chemistry were used to test the orthogonality of the operator axes.</li>
+<li><strong>Engineering cases:</strong> rocket-stage separation, language learning, mosquito temperature measurement, icebreaker strength, and paper-cup construction.</li>
+<li><strong>Chaos tests:</strong> a conservative double pendulum was used to examine the threshold behavior of the Lyapunov exponent and invariant measures.</li>
+<li><strong>Algebraic prediction:</strong> the \(\varepsilon\text{–}\eta\text{–}\eta\text{–}\varepsilon\) pattern was derived before comparison with the recorded meso-structures.</li>
+</ul>
+
+<h2>12. Open questions</h2>
+<ul>
+<li>Forward-test the fourth workshop: the meso-structure of the \(I\to Q_2\) edge.</li>
+<li>Test portability of the full method through work performed independently by other practitioners.</li>
+<li>Maintain \(\varepsilon\)-discipline: specify \(\varepsilon\) and \(\eta\) explicitly in every new case.</li>
+<li>Define \(Q_1\) by the relevant ergodic component or governing useful function, not by a convenient parameter.</li>
+<li>Avoid address collisions in fractal descent by indexing meso-steps with their parent node.</li>
+</ul>
+
+<h2>13. Crystal in one line</h2>
+
+<div class="box">
+<p>If there is change, \(x\neq y\), and a governing useful function is fixed, then a category exists; the five nodes and four morphisms are forced. The alternation \(\Phi_z\text{–}\Phi_o\text{–}\Phi_z\text{–}\Phi_o\) follows from the \(O\text{–}P\text{–}O\text{–}P\text{–}O\) law, while the palindrome \(\varepsilon\to\eta\to\eta\to\varepsilon\) follows from the geometry of the boundary: the edges release, while the center connects. The adjunction \(\Phi_o\dashv\Phi_z\) legitimizes the \(R\text{–}I\) test as a single object, and \(R_{\min}\) is the initial object: freedom equals minimality.</p>
+</div>
+
+<footer>
+<p>English version of <em>TKF License: PST — Full Crystal</em>, with the four-transition mechanics of \(\varepsilon\) and \(\eta\). Rendered with MathJax.</p>
+</footer>
+</main>
+</body>
+</html>
