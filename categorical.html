@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Categorical Formalization of the Process–Structure Transition (PST)</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['$$', '$$']],
+    processEscapes: true
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root { --ink:#1a202c; --muted:#4a5568; --line:#e2e8f0; --accent:#2b6cb0; --bg:#ffffff; --card:#f8fafc; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.65 Georgia, 'Times New Roman', serif; }
+main { max-width:900px; margin:0 auto; padding:48px 20px 80px; }
+h1 { font-size:2.1rem; line-height:1.25; margin:0 0 8px; }
+.byline { color:var(--muted); margin:0 0 28px; font-size:.95rem; }
+h2 { font-size:1.4rem; margin:42px 0 14px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+h3 { font-size:1.1rem; margin:28px 0 10px; }
+p, li { margin:0 0 14px; }
+.box { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:8px; padding:18px 20px; margin:24px 0; }
+.abstract { background:#f0f7ff; }
+.theorem { border-left-color:#2b6cb0; }
+.remark { background:#fffaf0; border-left-color:#d69e2e; }
+ul, ol { padding-left:26px; }
+a { color:var(--accent); }
+.diagram { text-align:center; margin:24px 0; font-size:1.05rem; }
+.diagram .chain { display:inline-block; padding:12px 18px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+footer { margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+.MathJax { overflow-x:auto; overflow-y:hidden; }
+</style>
+</head>
+<body>
+<main>
+<h1>Categorical Formalization of the Process–Structure Transition (PST)</h1>
+<p class="byline">Spartac Cebanu · Independent Researcher / QURIQ Framework · January 2026</p>
+
+<div class="box abstract">
+<p><strong>Abstract.</strong> This page combines a categorical proof of the necessity and sufficiency of the Process–Structure Transition (PST) decomposition with its functorial formulation, gauge invariance, and universal property. PST represents a transformation \(\mathbf{x}\to\mathbf{y}\) as a structured chain of five essential components, treated as a composite morphism in a specialized category.</p>
+<p><strong>Keywords:</strong> category theory, PST decomposition, process morphism, system dynamics, structural adaptation, commutative diagrams, functoriality, gauge equivalence.</p>
+</div>
+
+<h2>1. Introduction</h2>
+<p>The Process–Structure Transition (PST) formalizes the internal logic of dynamic change. A transformation is not treated as an unstructured “black box,” but as a directed sequence:</p>
+
+$$
+\mathbf{x}\xrightarrow{\pi_1}\operatorname{grad}F
+\xrightarrow{\pi_2}F
+\xrightarrow{\pi_3}F'
+\xrightarrow{\pi_4}\mathbf{y}.
+$$
+
+<div class="diagram">
+<div class="chain">
+\(\mathbf{x}\)
+\(\xrightarrow{\pi_1}\)
+\(\operatorname{grad}F\)
+\(\xrightarrow{\pi_2}\)
+\(F\)
+\(\xrightarrow{\pi_3}\)
+\(F'\)
+\(\xrightarrow{\pi_4}\)
+\(\mathbf{y}\)
+</div>
+</div>
+
+<p>The total transformation is the composite morphism</p>
+
+$$
+\mathbf{M}_{xy}=\pi_4\circ\pi_3\circ\pi_2\circ\pi_1.
+$$
+
+<h2>2. The PST category</h2>
+
+<div class="box">
+<p><strong>Definition 2.1 — The PST category \(\mathcal C_{\mathrm{PST}}\).</strong> \(\mathcal C_{\mathrm{PST}}\) is a directed acyclic category (DAC) in which:</p>
+<ul>
+<li><strong>Objects</strong> are state spaces representing the stages of transformation: \(\{\mathbf{x},\operatorname{grad}F,F,F',\mathbf{y}\}\).</li>
+<li><strong>Morphisms</strong> are non-degenerate, causally directed transformations \(\pi_i\), representing physical or logical transition laws.</li>
+</ul>
+</div>
+
+<div class="box">
+<p><strong>Definition 2.2 — Process morphism.</strong> The total transformation is the composite morphism</p>
+
+$$
+\mathbf{M}_{xy}=\pi_4\circ\pi_3\circ\pi_2\circ\pi_1.
+$$
+</div>
+
+<h2>3. Uniqueness and minimality</h2>
+
+<div class="box theorem">
+<p><strong>Theorem 3.1 — Uniqueness and minimality.</strong> The decomposition of \(\mathbf{M}_{xy}\) into the sequence \((\pi_1,\pi_2,\pi_3,\pi_4)\) is the unique minimal irreducible factorization. Removal of any object results in loss of structural coherence and deterministic reconstructibility.</p>
+</div>
+
+<h3>Proof of sufficiency</h3>
+<p>By the axioms of category theory, the composition of well-defined morphisms \(\pi_i\) uniquely defines \(\mathbf{M}_{xy}\). Each stage captures a necessary transition—from potential to flux, or from state to gradient—so the complete chain provides the parameters required to map the domain \(\mathbf{x}\) to the codomain \(\mathbf{y}\).</p>
+
+<h3>Proof of necessity</h3>
+<p>Assume that a sub-factorization preserves the identity of \(\mathbf{M}_{xy}\) while omitting at least one intermediate object.</p>
+
+<ol>
+<li><strong>Absence of \(F\) — structure.</strong> A shortcut \(\mu:\operatorname{grad}F\to F'\) implies a memoryless system. The object \(F\) internalizes the gradient; without it, the morphism fails to account for the state of accumulation and reduces the process to a static mapping.</li>
+<li><strong>Absence of \(\operatorname{grad}F\) — gradient.</strong> A morphism \(\mathbf{x}\to F\) lacks a causal trigger. In \(\mathcal C_{\mathrm{PST}}\), \(\operatorname{grad}F\) represents differential tension; without it, there is no functorial explanation of why the state \(\mathbf{x}\) should transition into structure \(F\).</li>
+<li><strong>Absence of \(F'\) — flow.</strong> A morphism \(F\to\mathbf{y}\) ignores temporal realization. Since \(F\) represents potential or structure, it cannot map directly to a terminal state without a rate-of-change component \(F'\).</li>
+</ol>
+
+<h2>4. The category of dynamical systems</h2>
+
+<div class="box">
+<p><strong>Definition 4.1 — Category of dynamical systems \(\mathcal C_{\mathrm{Dyn}}\).</strong> Objects are triples \((M,G,x_0)\), where:</p>
+<ul>
+<li>\(M\) is a smooth manifold, the state space;</li>
+<li>\(G:M\times I\to TM\) is a smooth, possibly time-dependent vector field;</li>
+<li>\(x_0\in M\) is an initial condition.</li>
+</ul>
+<p>A morphism</p>
+
+$$
+\psi:(M,G,x_0)\longrightarrow(N,H,y_0)
+$$
+
+<p>is a smooth map \(\psi:M\to N\) such that</p>
+
+$$
+\psi(x_0)=y_0,
+\qquad
+D\psi\circ G=H\circ\psi.
+$$
+
+<p>Thus \(\psi\) intertwines the trajectories generated by \(G\) and \(H\).</p>
+</div>
+
+<div class="box remark">
+<p><strong>Remark.</strong> Solutions of the ODE</p>
+
+$$
+\dot y=G(y,t)
+$$
+
+<p>are not morphisms in \(\mathcal C_{\mathrm{Dyn}}\), but derived objects canonically associated with the triple \((M,G,x_0)\).</p>
+</div>
+
+<h2>5. PST objects and intermediate categories</h2>
+<p>The PST decomposition associates to each object \((M,G,x_0)\) a chain of structured objects:</p>
+
+$$
+x_0
+\xrightarrow{\pi_1}\nabla\varphi
+\xrightarrow{\pi_2}\Phi
+\xrightarrow{\pi_3}\xi
+\xrightarrow{\pi_4}y(t).
+$$
+
+<p>These stages correspond respectively to localization, structural integration, flux extraction, and realization.</p>
+
+<ul>
+<li>\(\mathcal C_{\mathrm{State}}\): pointed manifolds \((M,x_0)\).</li>
+<li>\(\mathcal C_{\nabla}\): gradient fields or exact one-forms.</li>
+<li>\(\mathcal C_{\Phi}\): scalar potentials, modulo additive constants.</li>
+<li>\(\mathcal C_{\mathrm{Flux}}\): time-dependent flux fields governing evolution.</li>
+<li>\(\mathcal C_{\mathrm{Path}}\): realized integral curves with fixed initial data.</li>
+</ul>
+
+<h2>6. Functoriality of the PST chain</h2>
+
+<div class="box theorem">
+<p><strong>Theorem 6.1 — Functoriality of PST.</strong> There exists a functor</p>
+
+$$
+F_{\mathrm{PST}}:\mathcal C_{\mathrm{Dyn}}\longrightarrow\mathcal C_{\mathrm{Path}}
+$$
+
+<p>defined as the composite</p>
+
+$$
+F_{\mathrm{PST}}:=\pi_4\circ\pi_3\circ\pi_2\circ\pi_1,
+$$
+
+<p>where each transition \(\pi_i\) is functorial, either strictly or up to canonical isomorphism.</p>
+</div>
+
+<h3>Proof</h3>
+<ol>
+<li><strong>Localization \((\pi_1)\).</strong> The map \(x_0\mapsto\nabla\varphi\) lifts a pointed manifold into a canonical differential structure on its cotangent bundle. This defines a functor \(\mathcal C_{\mathrm{State}}\to\mathcal C_{\nabla}\), interpretable as a left adjoint to the forgetful functor that discards differential structure.</li>
+<li><strong>Structural integration \((\pi_2)\).</strong> On simply connected domains, the correspondence between exact gradients and scalar potentials defines an equivalence of categories</li>
+</ol>
+
+$$
+\mathcal C_{\nabla}\simeq\mathcal C_{\Phi},
+$$
+
+<p>up to additive constants. Hence \(\pi_2\) is functorial up to canonical isomorphism.</p>
+
+<ol start="3">
+<li><strong>Flux extraction \((\pi_3)\).</strong> The passage from a potential \(\Phi\) to a flux \(\xi\) is governed by differentiation. Although differentiation is not a strict functor on arbitrary function spaces, in this structured setting it defines a lax functor, preserving composition up to coherence isomorphisms induced by the Leibniz rule.</li>
+<li><strong>Realization \((\pi_4)\).</strong> Given a flux field \(\xi\) and an initial condition, the map \(\xi\mapsto y(t)\) is uniquely defined by the Picard–Lindelöf theorem. This defines a well-defined functor \(\mathcal C_{\mathrm{Flux}}\to\mathcal C_{\mathrm{Path}}\), preserving identities and isomorphisms.</li>
+<li><strong>Compositionality.</strong> For composable morphisms \(\psi_1,\psi_2\) in \(\mathcal C_{\mathrm{Dyn}}\), functoriality of the components implies a canonical isomorphism</li>
+</ol>
+
+$$
+F_{\mathrm{PST}}(\psi_2\circ\psi_1)
+\cong
+F_{\mathrm{PST}}(\psi_2)\circ F_{\mathrm{PST}}(\psi_1).
+$$
+
+<ol start="6">
+<li><strong>Identity.</strong> The identity object \((M,0,x_0)\) is mapped to the constant trajectory \(y(t)\equiv x_0\). Hence \(F_{\mathrm{PST}}\) preserves identities.</li>
+</ol>
+
+<div class="box">
+<p><strong>Commutative diagram.</strong> Transforming a dynamical system by a morphism \(\psi\) and then realizing its trajectory yields the same result as realizing the trajectory first and then mapping it by the induced path morphism:</p>
+
+$$
+\begin{array}{ccc}
+(M,G,x_0)&\xrightarrow{\psi}&(N,H,y_0)\\
+\Big\downarrow{F_{\mathrm{PST}}}&&\Big\downarrow{F_{\mathrm{PST}}}\\
+y_1(t)\in\mathcal C_{\mathrm{Path}}
+&\xrightarrow{F_{\mathrm{PST}}(\psi)}&
+y_2(t)\in\mathcal C_{\mathrm{Path}}
+\end{array}
+$$
+</div>
+
+<h2>7. Gauge invariance</h2>
+
+<div class="box theorem">
+<p><strong>Corollary 7.1 — Gauge invariance as a natural isomorphism.</strong> The PST gauge equivalence class defines a natural isomorphism between PST functors.</p>
+</div>
+
+<p>Consider the PST gauge transformation</p>
+
+$$
+(M,\varphi)\sim(\lambda M,\lambda\varphi),
+$$
+
+<p>where \(M\) denotes the structural kernel function, not the manifold, and \(\lambda\) is a nowhere-vanishing scalar field. Let \(F_{\mathrm{PST}}^{(1)}\) and \(F_{\mathrm{PST}}^{(\lambda)}\) denote PST functors corresponding to two representatives of the same gauge class. For each object, define a component</p>
+
+$$
+\eta_\lambda:F_{\mathrm{PST}}^{(1)}\Rightarrow F_{\mathrm{PST}}^{(\lambda)}
+$$
+
+<p>by pointwise multiplication by \(\lambda\) on intermediate structures. Since \(\lambda\) cancels in the ratio defining velocity,</p>
+
+$$
+\dot y=\frac{\varphi}{M},
+$$
+
+<p>all diagrams commute. Therefore, \(\eta_\lambda\) is a natural isomorphism, and the realized trajectory \(y(t)\) is invariant under the choice of gauge representative.</p>
+
+<h2>8. Universal property</h2>
+
+<div class="box theorem">
+<p><strong>Theorem 8.1 — Canonical factorization property.</strong> The PST decomposition satisfies a universal property: it is the canonical factorization of a dynamical process. Any factorization of the evolution operator compatible with deterministic trajectory reconstruction factors uniquely, up to canonical isomorphism, through the PST chain in the 2-category of structured dynamical systems.</p>
+</div>
+
+<p>Each PST object</p>
+
+$$
+\{x_0,\nabla\varphi,\Phi,\xi,y\}
+$$
+
+<p>encodes information strictly necessary for deterministic evolution. Removal of any stage destroys either trajectory reconstructibility or functorial consistency. Consequently, PST represents a minimal sufficient structure ensuring both trajectory reconstructibility and categorical coherence of the dynamics.</p>
+
+<h2>9. Conclusion</h2>
+<p>The PST framework provides a categorical description of irreducible dynamic systems. It identifies a minimal sufficient set of objects that ensures deterministic reconstructibility, functorial coherence, gauge invariance, and a canonical factorization property.</p>
+
+<h2>References</h2>
+<ol>
+<li>Mac Lane, S. (1978). <em>Categories for the Working Mathematician</em>. Springer-Verlag.</li>
+<li>Spivak, D. I. (2014). <em>Category Theory for the Sciences</em>. MIT Press.</li>
+<li>Baez, J. C., &amp; Pollard, B. S. (2017). <em>A Mathematical Theory of Open Systems</em>.</li>
+</ol>
+
+<footer>
+<p>Unified from <em>PST Categorical Proof</em>, <em>PST Categorical Formalization</em>, and <em>PST Functoriality</em>. Rendered with MathJax.</p>
+</footer>
+</main>
+</body>
+</html>
