@@ -129,37 +129,74 @@ Q_1\to U\to R\to I\to Q_2.
 $$
 </div>
 
-<h2>5. Example: an RC circuit</h2>
-<p>For a first-order RC low-pass filter,</p>
+<h2>5. Case study: an RC circuit</h2>
+<p>Consider a series RC circuit. The input voltage is \(x(t)\), and the output voltage across the capacitor is \(y(t)\). The circuit satisfies</p>
 $$
-RC\frac{dy}{dt}+y=x.
-$$
-<p>Taking the Laplace transform with zero initial conditions gives</p>
-$$
-(RCs+1)Y(s)=X(s).
-$$
-<p>Therefore,</p>
-$$
-R(s)=\frac{1}{RCs+1},
-$$
-<p>and</p>
-$$
-I(s)=\frac{U(s)}{RCs+1}.
-$$
-<p>Finally,</p>
-$$
-Q_2(t)=\mathcal L^{-1}\left\{\frac{U(s)}{RCs+1}\right\}.
-$$
-<p>This is exactly the PST sequence:</p>
-$$
-Q_1\to U\to R\to I\to Q_2.
+RC\frac{dy(t)}{dt}+y(t)=x(t).
 $$
 
-<h2>6. \(\varepsilon\) and \(\eta\)</h2>
+<h3>5.1 \(Q_1\): the input signal</h3>
+<p>Let the input be a voltage step of amplitude \(V_0\):</p>
+$$
+Q_1(t)=V_0u(t),
+$$
+<p>where \(u(t)\) is the unit-step function. Before \(t=0\), the input is zero; after \(t=0\), it is constant at \(V_0\).</p>
+
+<h3>5.2 \(U\): the spectral input</h3>
+<p>The direct Laplace transform gives</p>
+$$
+U(s)=\mathcal L\{Q_1(t)\}=\frac{V_0}{s}.
+$$
+<p>Thus the time-domain step becomes a spectral projection. In PST terms,</p>
+$$
+Q_1\xrightarrow{\mathcal L}U.
+$$
+
+<h3>5.3 \(R\): the circuit operator</h3>
+<p>For the RC low-pass filter, the transfer function is</p>
+$$
+R(s)=\frac{1}{1+sRC}.
+$$
+<p>This is the structural operator of the circuit. It determines how the input spectrum is transformed into the output spectrum.</p>
+
+<h3>5.4 \(I\): the spectral response</h3>
+<p>Applying the operator gives</p>
+$$
+I(s)=R(s)U(s)
+=\frac{1}{1+sRC}\cdot\frac{V_0}{s}
+=\frac{V_0}{s(1+sRC)}.
+$$
+<p>This is the Laplace-domain response.</p>
+
+<h3>5.5 \(Q_2\): the time-domain output</h3>
+<p>The inverse Laplace transform gives</p>
+$$
+Q_2(t)=\mathcal L^{-1}\{I(s)\}
+=V_0\left(1-e^{-t/RC}\right)u(t).
+$$
+<p>The capacitor voltage starts at zero and approaches \(V_0\) exponentially. The time constant is</p>
+$$
+\tau=RC.
+$$
+
+<div class='box theorem'>
+<p><strong>Complete PST cycle.</strong></p>
+$$
+Q_1(t)=V_0u(t)
+\xrightarrow{\mathcal L}
+U(s)=\frac{V_0}{s}
+\xrightarrow{R(s)=\frac{1}{1+sRC}}
+I(s)=\frac{V_0}{s(1+sRC)}
+\xrightarrow{\mathcal L^{-1}}
+Q_2(t)=V_0\left(1-e^{-t/RC}\right)u(t).
+$$
+</div>
+
+<h2>6. The \(\varepsilon\) and \(\eta\) interpretation</h2>
 <table>
 <tr><th>Transition</th><th>Operator</th><th>Action</th><th>Meaning</th></tr>
 <tr><td>\(Q_1\to U\)</td><td>\(\varepsilon\)</td><td>Disconnection</td><td>Separate the signal from its time-domain form and represent it spectrally.</td></tr>
-<tr><td>\(U\to R\)</td><td>\(\eta\)</td><td>Connection</td><td>Select or construct the operator acting on the spectrum.</td></tr>
+<tr><td>\(U\to R\)</td><td>\(\eta\)</td><td>Connection</td><td>Connect the spectral input to the circuit operator.</td></tr>
 <tr><td>\(R\to I\)</td><td>\(\varepsilon\)</td><td>Connection</td><td>Apply the operator and obtain the transformed response.</td></tr>
 <tr><td>\(I\to Q_2\)</td><td>\(\eta\)</td><td>Disconnection</td><td>Release the frequency-domain result back into time.</td></tr>
 </table>
@@ -187,20 +224,26 @@ $$
 <p><strong>Interpretation.</strong> The palindrome expresses a controlled detour: the process leaves the time domain, passes through a structural operator, and returns with a new computed outcome.</p>
 </div>
 
-<h2>8. Why it works</h2>
-<p>The power of the Laplace transform comes from</p>
+<h2>8. Why the RC case is clear</h2>
+<p>The RC circuit shows that the Laplace transform is an isomorphism between representations, while the circuit operator \(R\) changes the signal.</p>
+<p>The transform pair satisfies</p>
 $$
-\text{differentiation in time}\longleftrightarrow\text{multiplication by }s.
+\mathcal L^{-1}\mathcal L=\mathrm{id}.
 $$
-<p>Therefore,</p>
+<p>Therefore, if the circuit operator were the identity, \(R(s)=1\), the output would equal the input:</p>
 $$
-\text{differential equation}\longrightarrow\text{algebraic equation}.
+Q_2=Q_1.
 $$
-<p>The dynamic problem is temporarily projected into a domain where it can be manipulated algebraically, then projected back.</p>
-<p>This is the PST principle:</p>
+<p>But for the RC filter,</p>
 $$
-\text{object}\to\text{projection}\to\text{structure}\to\text{projection}\to\text{object}.
+R(s)=\frac{1}{1+sRC}\neq1,
 $$
+<p>so the output is not the input:</p>
+$$
+Q_2(t)=V_0\left(1-e^{-t/RC}\right)u(t)
+\neq Q_1(t).
+$$
+<p>The input is a sudden step; the output is a smooth exponential charging curve. The structure \(R\) has transformed the object.</p>
 
 <h2>9. Boundary of the analogy</h2>
 <p>The identification is strongest for linear, time-invariant, single-input single-output systems, where \(R\) is a genuine transfer function. For nonlinear, time-varying, distributed-parameter, or stochastic systems, \(R\) may depend on state, time, amplitude, frequency, or boundary conditions.</p>
