@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Canonical Information Chain and Gauge Equivalence</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['$$', '$$']],
+    processEscapes: true
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root { --ink:#1a202c; --muted:#4a5568; --line:#e2e8f0; --accent:#2b6cb0; --bg:#ffffff; --card:#f8fafc; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.65 Georgia, 'Times New Roman', serif; }
+main { max-width:860px; margin:0 auto; padding:48px 20px 80px; }
+h1 { font-size:2rem; line-height:1.25; margin:0 0 8px; }
+.byline { color:var(--muted); margin:0 0 32px; font-size:.95rem; }
+h2 { font-size:1.35rem; margin:40px 0 14px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+h3 { font-size:1.08rem; margin:28px 0 10px; }
+p, li { margin:0 0 14px; }
+.box { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:8px; padding:18px 20px; margin:24px 0; }
+.box h3 { margin-top:0; }
+.abstract { background:#f0f7ff; border-left-color:var(--accent); }
+.remark { background:#fffaf0; border-left-color:#d69e2e; }
+ul, ol { padding-left:26px; }
+a { color:var(--accent); }
+footer { margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+.MathJax { overflow-x:auto; overflow-y:hidden; }
+</style>
+</head>
+<body>
+<main>
+<h1>The Canonical Information Chain and Gauge Equivalence</h1>
+<p class="byline">Spartac Cebanu</p>
+
+<div class="box abstract">
+<p>This page formalizes the operational sequence of a dynamical process. It presents a canonical factorization of scalar first-order ordinary differential equations into a five-element information chain and establishes its relation to a multiplicative gauge class.</p>
+</div>
+
+<h2>Definition: the information chain</h2>
+<p>Let \(\Omega\subset\mathbb{R}\) be an open domain and \(I=[t_0,t_f]\). Consider the scalar Cauchy problem</p>
+
+$$
+\dot y(t)=G(y(t),t),\qquad y(t_0)=x\in\Omega,
+$$
+
+<p>where \(G\in C^1(\Omega\times I)\) is locally Lipschitz in \(y\). The <em>information chain</em> of the process is the ordered five-tuple</p>
+
+$$
+\mathcal S_F=\bigl(x,\nabla F,F,F',y\bigr).
+$$
+
+<ul>
+<li>\(x\in\Omega\) is the initial state at \(t_0\).</li>
+<li>\(F\in C^2(\Omega\times I)\) is a scalar primitive, or potential.</li>
+<li>\(\nabla F(y,t):=\partial_yF(y,t)\) is the spatial derivative, or gradient.</li>
+<li>\(F'(t):=\frac{d}{dt}F(y(t),t)\) is the total temporal derivative, or flux, along the trajectory.</li>
+<li>\(y\in C^1(I,\Omega)\) is the integral curve, or observable trajectory.</li>
+</ul>
+
+<p>The non-degeneracy condition is</p>
+
+$$
+\nabla F(y,t)\neq0
+\qquad\text{on }\Omega\times I.
+$$
+
+<h2>Theorem: PST factorization and operational irreducibility</h2>
+
+<div class="box">
+<p>The information chain \(\mathcal S_F\) represents a necessary and sufficient data skeleton for the unique deterministic reconstruction of the system’s evolution. Furthermore, the directed sequence</p>
+
+$$
+x\longrightarrow\nabla F\longrightarrow F\longrightarrow F'\longrightarrow y
+$$
+
+<p>is a specific, gauge-fixed representative of the process–structure equivalence class, bridging the geometrical state space and the temporal flux.</p>
+</div>
+
+<h3>Part I: sufficiency</h3>
+<p>Assume that \(\mathcal S_F\) is given and that \(\nabla F\neq0\). By the chain rule for the total time derivative of the potential \(F\) along the trajectory \(y(t)\),</p>
+
+$$
+F'(t)=\nabla F(y(t),t)\cdot\dot y(t)+\partial_tF(y(t),t).
+$$
+
+<p>Solving algebraically for the local velocity gives</p>
+
+$$
+\dot y(t)=\frac{F'(t)-\partial_tF(y(t),t)}{\nabla F(y(t),t)}.
+$$
+
+<p>Integrating with respect to time and imposing the initial condition \(x\) yields the integral curve</p>
+
+$$
+y(t)=x+\int_{t_0}^{t}
+\frac{F'(s)-\partial_tF(y(s),s)}{\nabla F(y(s),s)}\,ds.
+$$
+
+<p>Since \(F\in C^2\) and \(\nabla F\neq0\), the integrand is \(C^1\) and locally Lipschitz in \(y\). By the Picard–Lindelöf theorem, the local solution exists, is unique, and extends to \(I\). Thus \(\mathcal S_F\) is sufficient for deterministic path synthesis.</p>
+
+<h3>Part II: necessity</h3>
+<p>The minimality of \(\mathcal S_F\) follows from the fact that removing any single element breaks the injectivity of the mapping from the data set to the trajectory \(y(t)\).</p>
+
+<ol>
+<li><strong>Absence of \(x\):</strong> the trajectory is defined only up to an integration constant; distinct initial states can generate different trajectories.</li>
+<li><strong>Absence of \(\nabla F\):</strong> without the spatial gradient, the local scaling of the potential change relative to spatial displacement is unknown, so \(\dot y\) cannot be calculated.</li>
+<li><strong>Absence of \(F\):</strong> without the primitive potential, the explicit time derivative \(\partial_tF\) is unavailable, preventing separation of the autonomous structural evolution from movement within the field.</li>
+<li><strong>Absence of \(F'\):</strong> without the total temporal flux, the actual rate of potential change along the dynamical path is unknown.</li>
+<li><strong>Absence of \(y\):</strong> without the integral curve, the system lacks a terminal verification state.</li>
+</ol>
+
+<p>Therefore, no proper subset of \(\mathcal S_F\) is informationally complete.</p>
+
+<h3>Part III: gauge isomorphism</h3>
+<p>Let the governing vector field admit a process–structure decomposition of the form</p>
+
+$$
+G(y,t)=\frac{\varphi(y,t)}{M(y,t)},
+\qquad M(y,t)>0.
+$$
+
+<p>Assuming locally that \(\nabla F>0\), define</p>
+
+$$
+M(y,t):=\frac{1}{\nabla F(y,t)},
+\qquad
+\varphi(y,t):=\frac{G(y,t)}{\nabla F(y,t)}.
+$$
+
+<p>Then \(M>0\), and the ratio is preserved:</p>
+
+$$
+\frac{\varphi(y,t)}{M(y,t)}
+=
+\frac{G(y,t)/\nabla F(y,t)}{1/\nabla F(y,t)}
+=G(y,t).
+$$
+
+<p>Thus the information chain \(\mathcal S_F\) is a gauge-fixed realization of the dynamics. The structure \(M\) is inversely proportional to the gradient of the potential, while the process \(\varphi\) absorbs temporal flux variations. A scale transformation</p>
+
+$$
+(M,\varphi)\mapsto(\lambda M,\lambda\varphi),
+\qquad\lambda>0,
+$$
+
+corresponds to choosing a different potential \(F\), while leaving the integral curve \(y(t)\) invariant.
+
+<div class="box remark">
+<p><strong>Remark.</strong> The theorem mathematically formalizes the Process–Structure Transition (PST). The necessity and sufficiency conditions show that the sequence</p>
+
+$$
+x\to\operatorname{grad}F\to F\to F'\to y
+$$
+
+<p>is not merely a conceptual metaphor, but a minimal, operationally irreducible algebraic skeleton of a deterministic scalar dynamical system.</p>
+</div>
+
+<footer>
+<p>Rendered with MathJax. Source: Spartac Cebanu.</p>
+</footer>
+</main>
+</body>
+</html>
