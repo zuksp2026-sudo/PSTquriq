@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LgUkPstMsPrj121126 — Англо-русский разбор текста</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Шрифт Inter и JetBrains Mono для предпросмотра -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 selection:bg-brand-500 selection:text-white">
+
+    <!-- Верхняя панель навигации -->
+    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                        LgUkPstMsPrj121126
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+                        Умный разбор английского текста в 4 учебных блока
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Переключатель темы -->
+                <button id="themeToggle" type="button" aria-label="Переключить тему" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors">
+                    <!-- Иконка солнца (для тёмной темы) -->
+                    <svg id="sunIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <!-- Иконка луны (для светлой темы) -->
+                    <svg id="moonIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Всплывающее уведомление (Message Box вместо alert) -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Основной контент -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+            
+            <!-- Левая колонка: Ввод текста -->
+            <section class="lg:col-span-5 flex flex-col gap-4 bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <label for="sourceText" class="text-sm font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                        Исходный текст на английском
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <button id="loadSampleBtn" type="button" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors">
+                            Загрузить пример
+                        </button>
+                        <button id="clearBtn" type="button" class="text-xs font-medium px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors">
+                            Очистить
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <textarea 
+                        id="sourceText" 
+                        rows="10" 
+                        placeholder="Вставьте сюда абзац на английском языке для полного разбора..."
+                        class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-y text-sm sm:text-base leading-relaxed transition-shadow"
+                    ></textarea>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+                        <span id="charCount">0 символов</span>
+                        <span>Формат вывода: 4 блока (.txt)</span>
+                    </div>
+                </div>
+
+                <!-- Информация о структуре выходного файла -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
+                    <div class="font-semibold text-slate-700 dark:text-slate-300 mb-1">Что будет в текстовом файле:</div>
+                    <div class="flex items-start gap-2">
+                        <span class="font-mono font-bold text-brand-600 dark:text-brand-400">1.</span>
+                        <span>Весь абзац на английском и общий перевод на русский под ним.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="font-mono font-bold text-brand-600 dark:text-brand-400">2.</span>
+                        <span>Каждое предложение отдельно + перевод через пустую строку.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="font-mono font-bold text-brand-600 dark:text-brand-400">3.</span>
+                        <span>Фразы, словосочетания и устойчивые выражения с переводом.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="font-mono font-bold text-brand-600 dark:text-brand-400">4.</span>
+                        <span>Пословный словарь: одно слово на английском и перевод под ним.</span>
+                    </div>
+                </div>
+
+                <!-- Кнопка запуска -->
+                <button 
+                    id="processBtn" 
+                    type="button" 
+                    class="w-full py-3.5 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-semibold text-sm sm:text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                    <svg id="processIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <svg id="loadingSpinner" class="w-5 h-5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="processBtnText">Обработать и создать файл</span>
+                </button>
+            </section>
+
+            <!-- Правая колонка: Предпросмотр результата и скачивание -->
+            <section class="lg:col-span-7 flex flex-col gap-4 bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm min-h-[520px]">
+                
+                <!-- Панель управления результатом -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                            Предпросмотр учебного файла
+                        </h2>
+                        <span id="statusBadge" class="hidden px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                            Готово
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                        <!-- Переключатель вида: Карточки / Чистый текст -->
+                        <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 mr-auto sm:mr-1">
+                            <button id="viewBlocksBtn" type="button" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all">
+                                По блокам
+                            </button>
+                            <button id="viewRawBtn" type="button" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+                                Вид .txt
+                            </button>
+                        </div>
+
+                        <button 
+                            id="copyBtn" 
+                            type="button" 
+                            disabled
+                            class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <span id="copyBtnText">Копировать текст</span>
+                        </button>
+
+                        <button 
+                            id="downloadBtn" 
+                            type="button" 
+                            disabled
+                            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span>Скачать .txt</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Состояние ожидания (Empty State) -->
+                <div id="emptyState" class="flex-1 flex flex-col items-center justify-center text-center py-12 px-4">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                        Здесь появится разбор вашего текста
+                    </h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+                        Вставьте английский абзац слева или нажмите «Загрузить пример», затем запустите обработку. Вы сможете сразу скачать готовый текстовый файл.
+                    </p>
+                </div>
+
+                <!-- Состояние загрузки (Skeleton) -->
+                <div id="loadingState" class="hidden flex-1 flex flex-col gap-4 py-4 animate-pulse">
+                    <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60 space-y-2">
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60 space-y-2">
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-2/3"></div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60 space-y-2">
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Визуальный предпросмотр по 4 блокам -->
+                <div id="blocksPreview" class="hidden flex-col gap-5 max-h-[68vh] overflow-y-auto pr-1">
+                    
+                    <!-- Блок 1 -->
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 overflow-hidden">
+                        <div class="px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                                Блок 1 • Абзац и общий перевод
+                            </span>
+                        </div>
+                        <div class="p-4 space-y-2 text-sm sm:text-base leading-relaxed">
+                            <p id="b1En" class="font-medium text-slate-900 dark:text-white"></p>
+                            <p id="b1Ru" class="text-slate-600 dark:text-slate-300"></p>
+                        </div>
+                    </div>
+
+                    <!-- Блок 2 -->
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 overflow-hidden">
+                        <div class="px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                                Блок 2 • Предложения с переводом
+                            </span>
+                            <span id="b2Count" class="text-xs text-slate-500 dark:text-slate-400"></span>
+                        </div>
+                        <div id="b2List" class="p-4 space-y-4 text-sm sm:text-base"></div>
+                    </div>
+
+                    <!-- Блок 3 -->
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 overflow-hidden">
+                        <div class="px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                                Блок 3 • Фразы, словосочетания и устойчивые выражения
+                            </span>
+                            <span id="b3Count" class="text-xs text-slate-500 dark:text-slate-400"></span>
+                        </div>
+                        <div id="b3List" class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm"></div>
+                    </div>
+
+                    <!-- Блок 4 -->
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 overflow-hidden">
+                        <div class="px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                                Блок 4 • Словарь (слово и перевод под ним)
+                            </span>
+                            <span id="b4Count" class="text-xs text-slate-500 dark:text-slate-400"></span>
+                        </div>
+                        <div id="b4List" class="p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm"></div>
+                    </div>
+                </div>
+
+                <!-- Предпросмотр сырого .txt файла -->
+                <div id="rawPreview" class="hidden flex-1 flex-col">
+                    <textarea 
+                        id="rawOutputArea" 
+                        readonly 
+                        class="w-full flex-1 min-h-[440px] p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed focus:outline-none resize-y"
+                    ></textarea>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Скрытый textarea для надёжного копирования в буфер обмена -->
+    <textarea id="clipboardHelper" class="sr-only" aria-hidden="true"></textarea>
+
+    <script>
+        // =========================================================================
+        // 1. ЭЛЕМЕНТЫ DOM И СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        // =========================================================================
+        const sourceText = document.getElementById('sourceText');
+        const charCount = document.getElementById('charCount');
+        const loadSampleBtn = document.getElementById('loadSampleBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const processBtn = document.getElementById('processBtn');
+        const processIcon = document.getElementById('processIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const processBtnText = document.getElementById('processBtnText');
+
+        const statusBadge = document.getElementById('statusBadge');
+        const viewBlocksBtn = document.getElementById('viewBlocksBtn');
+        const viewRawBtn = document.getElementById('viewRawBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyBtnText = document.getElementById('copyBtnText');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const blocksPreview = document.getElementById('blocksPreview');
+        const rawPreview = document.getElementById('rawPreview');
+        const rawOutputArea = document.getElementById('rawOutputArea');
+
+        const b1En = document.getElementById('b1En');
+        const b1Ru = document.getElementById('b1Ru');
+        const b2Count = document.getElementById('b2Count');
+        const b2List = document.getElementById('b2List');
+        const b3Count = document.getElementById('b3Count');
+        const b3List = document.getElementById('b3List');
+        const b4Count = document.getElementById('b4Count');
+        const b4List = document.getElementById('b4List');
+
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const toastContainer = document.getElementById('toastContainer');
+        const clipboardHelper = document.getElementById('clipboardHelper');
+
+        // Состояние приложения
+        let generatedPlainText = "";
+        let currentViewMode = "blocks"; // 'blocks' или 'raw'
+
+        // Пример текста для быстрого тестирования
+        const SAMPLE_PARAGRAPH = "Learning a new language takes patience, consistency, and a willingness to make mistakes along the way. At first, everything may sound overwhelming, as if native speakers are talking at lightning speed. However, if you make a habit of breaking down short texts every single day, you will gradually start recognizing familiar patterns and expressions. Before you know it, those scattered words will come together naturally, allowing you to express your thoughts with confidence.";
+
+        // =========================================================================
+        // 2. ВСТРОЕННЫЙ ЛОКАЛЬНЫЙ СЛОВАРЬ (ИДИОМЫ, ФРАЗОВЫЕ ГЛАГОЛЫ И БАЗОВЫЕ СЛОВА)
+        // =========================================================================
+        const KNOWN_PHRASES_DICT = {
+            "along the way": "по пути",
+            "at first": "сначала",
+            "as if": "как будто",
+            "native speakers": "носители языка",
+            "at lightning speed": "с молниеносной скоростью",
+            "lightning speed": "молниеносная скорость",
+            "make a habit": "взять в привычку",
+            "make a habit of": "взять в привычку",
+            "breaking down": "разбор на части",
+            "break down": "разбирать на части",
+            "every single day": "каждый божий день",
+            "before you know it": "не успеешь оглянуться",
+            "come together": "складываться воедино",
+            "make mistakes": "совершать ошибки",
+            "look forward to": "с нетерпением ждать",
+            "give up": "сдаваться",
+            "figure out": "разобраться",
+            "find out": "выяснить",
+            "carry on": "продолжать",
+            "take place": "происходить",
+            "take part": "участвовать",
+            "take care of": "заботиться о",
+            "in order to": "для того чтобы",
+            "on the other hand": "с другой стороны",
+            "as a result": "в результате",
+            "in fact": "на самом деле",
+            "for instance": "например",
+            "for example": "например",
+            "such as": "такие как",
+            "as well as": "а также",
+            "no matter": "несмотря на",
+            "at least": "по крайней мере",
+            "right away": "сразу же",
+            "so far": "до сих пор",
+            "all of a sudden": "внезапно",
+            "in the long run": "в конечном счёте",
+            "keep in mind": "иметь в виду",
+            "make sure": "убедиться",
+            "pay attention": "обращать внимание",
+            "point of view": "точка зрения",
+            "ups and downs": "взлёты и падения",
+            "piece of cake": "проще простого",
+            "once in a while": "время от времени"
+        };
+
+        const OFFLINE_WORD_DICT = {
+            "a": "артикль", "an": "артикль", "the": "артикль", "and": "и", "or": "или", "but": "но",
+            "if": "если", "as": "как", "at": "в", "by": "у", "for": "для", "from": "из", "in": "в",
+            "into": "в", "of": "из", "on": "на", "to": "к", "with": "с", "without": "без",
+            "you": "ты", "your": "твой", "we": "мы", "our": "наш", "they": "они", "their": "их",
+            "he": "он", "she": "она", "it": "оно", "its": "его", "this": "этот", "that": "тот",
+            "these": "эти", "those": "те", "who": "кто", "which": "который", "what": "что",
+            "is": "есть", "are": "являются", "was": "был", "were": "были", "be": "быть",
+            "have": "иметь", "has": "имеет", "had": "имел", "do": "делать", "does": "делает",
+            "will": "будет", "would": "бы", "can": "мочь", "could": "мог", "may": "может",
+            "might": "мог бы", "must": "должен", "should": "следует", "not": "не",
+            "new": "новый", "language": "язык", "learning": "изучение", "takes": "требует",
+            "patience": "терпение", "consistency": "последовательность", "willingness": "готовность",
+            "make": "делать", "mistakes": "ошибки", "along": "вдоль", "way": "путь",
+            "first": "сначала", "everything": "всё", "sound": "звучать", "overwhelming": "ошеломляющим",
+            "native": "родной", "speakers": "носители", "talking": "говорящие", "lightning": "молния",
+            "speed": "скорость", "however": "однако", "habit": "привычка", "breaking": "разбиение",
+            "down": "вниз", "short": "короткие", "texts": "тексты", "every": "каждый",
+            "single": "единственный", "day": "день", "gradually": "постепенно", "start": "начинать",
+            "recognizing": "узнавание", "familiar": "знакомые", "patterns": "шаблоны",
+            "expressions": "выражения", "before": "прежде", "know": "знать", "scattered": "разрозненные",
+            "words": "слова", "come": "приходить", "together": "вместе", "naturally": "естественно",
+            "allowing": "позволяя", "express": "выражать", "thoughts": "мысли", "confidence": "уверенность",
+            "time": "время", "people": "люди", "work": "работа", "life": "жизнь", "world": "мир"
+        };
+
+        // Стоп-слова, которые не могут начинать или завершать эвристическую коллокацию
+        const STOP_WORDS = new Set([
+            "a", "an", "the", "and", "or", "but", "if", "then", "else", "when", "at", "by",
+            "for", "with", "about", "against", "between", "into", "through", "during", "before",
+            "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off",
+            "over", "under", "again", "further", "once", "here", "there", "where", "why", "how",
+            "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no",
+            "nor", "not", "only", "own", "same", "so", "than", "too", "very", "can", "will",
+            "just", "should", "now", "i", "me", "my", "myself", "we", "our", "ours", "you",
+            "your", "yours", "he", "him", "his", "she", "her", "hers", "it", "its", "they",
+            "them", "their", "what", "which", "who", "whom", "this", "that", "these", "those",
+            "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had",
+            "having", "do", "does", "did", "doing", "as", "of", "may", "might", "must", "would", "could"
+        ]);
+
+        // =========================================================================
+        // 3. УПРАВЛЕНИЕ ТЕМОЙ И ИНТЕРФЕЙСОМ
+        // =========================================================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('lguk_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('lguk_theme', isDark ? 'dark' : 'light');
+            sunIcon.classList.toggle('hidden', !isDark);
+            moonIcon.classList.toggle('hidden', isDark);
+        });
+
+        initTheme();
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = {
+                info: 'bg-slate-900 text-white dark:bg-slate-800 border-slate-700',
+                success: 'bg-emerald-600 text-white border-emerald-500',
+                error: 'bg-rose-600 text-white border-rose-500'
+            };
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl border shadow-lg text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0 flex items-center gap-2 ${colors[type] || colors.info}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function updateCharCount() {
+            const len = sourceText.value.length;
+            charCount.textContent = `${len} ${getPlural(len, 'символ', 'символа', 'символов')}`;
+        }
+
+        function getPlural(n, one, few, many) {
+            const mod10 = n % 10;
+            const mod100 = n % 100;
+            if (mod10 === 1 && mod100 !== 11) return one;
+            if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+            return many;
+        }
+
+        sourceText.addEventListener('input', updateCharCount);
+
+        loadSampleBtn.addEventListener('click', () => {
+            sourceText.value = SAMPLE_PARAGRAPH;
+            updateCharCount();
+            showToast('Пример текста загружен', 'info');
+        });
+
+        clearBtn.addEventListener('click', () => {
+            sourceText.value = '';
+            updateCharCount();
+            sourceText.focus();
+        });
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            if (mode === 'blocks') {
+                viewBlocksBtn.classList.add('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+                viewBlocksBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
+                viewRawBtn.classList.remove('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+                viewRawBtn.classList.add('text-slate-600', 'dark:text-slate-400');
+
+                if (generatedPlainText) {
+                    blocksPreview.classList.remove('hidden');
+                    blocksPreview.classList.add('flex');
+                    rawPreview.classList.add('hidden');
+                    rawPreview.classList.remove('flex');
+                }
+            } else {
+                viewRawBtn.classList.add('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+                viewRawBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
+                viewBlocksBtn.classList.remove('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+                viewBlocksBtn.classList.add('text-slate-600', 'dark:text-slate-400');
+
+                if (generatedPlainText) {
+                    rawPreview.classList.remove('hidden');
+                    rawPreview.classList.add('flex');
+                    blocksPreview.classList.add('hidden');
+                    blocksPreview.classList.remove('flex');
+                }
+            }
+        }
+
+        viewBlocksBtn.addEventListener('click', () => setViewMode('blocks'));
+        viewRawBtn.addEventListener('click', () => setViewMode('raw'));
+
+        // =========================================================================
+        // 4. ЛИНГВИСТИЧЕСКИЙ ПАРСЕР (ПРЕДЛОЖЕНИЯ, ФРАЗЫ, УНИКАЛЬНЫЕ СЛОВА)
+        // =========================================================================
+        function normalizeParagraph(rawText) {
+            return rawText.replace(/\s+/g, ' ').trim();
+        }
+
+        function extractSentences(paragraph) {
+            // Защита распространённых сокращений от ложного разрыва предложения
+            const protectedText = paragraph
+                .replace(/\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|e\.g|i\.e)\./gi, '$1\u0000');
+
+            const rawSentences = protectedText.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [paragraph];
+            return rawSentences
+                .map(s => s.replace(/\u0000/g, '.').trim())
+                .filter(s => s.length > 0);
+        }
+
+        function extractPhrasesAndCollocations(paragraph, sentences) {
+            const foundMap = new Map(); // lowerPhrase -> { en, presetRu }
+            const lowerParagraph = paragraph.toLowerCase();
+
+            // 1. Поиск по словарю идиом и фразовых глаголов
+            const dictKeys = Object.keys(KNOWN_PHRASES_DICT).sort((a, b) => b.length - a.length);
+            for (const key of dictKeys) {
+                const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+                const match = paragraph.match(regex);
+                if (match && !foundMap.has(key)) {
+                    foundMap.set(key, {
+                        en: match[0],
+                        presetRu: KNOWN_PHRASES_DICT[key]
+                    });
+                }
+            }
+
+            // 2. Эвристика характерных словосочетаний (прилагательное/причастие + существительное, глагол + предлог/наречие)
+            const collocationPatterns = [
+                /\b([a-z]+(?:ing|ed|ous|ful|less|able|ible|al|ic|ive|ly))\s+([a-z]{3,})\b/gi,
+                /\b(make|take|get|give|keep|break|come|go|put|set|turn|look|bring|carry|figure|find|pay|express)\s+(?:a\s+|an\s+|the\s+|your\s+|their\s+|our\s+)?([a-z]{3,}(?:\s+(?:down|up|out|in|off|on|away|together))?)\b/gi
+            ];
+
+            for (const sentence of sentences) {
+                for (const pattern of collocationPatterns) {
+                    pattern.lastIndex = 0;
+                    let m;
+                    while ((m = pattern.exec(sentence)) !== null) {
+                        const candidate = m[0].trim();
+                        const words = candidate.toLowerCase().split(/\s+/);
+                        if (words.length < 2 || words.length > 4) continue;
+                        if (STOP_WORDS.has(words[0]) || STOP_WORDS.has(words[words.length - 1])) continue;
+
+                        const normKey = words.join(' ');
+                        if (!foundMap.has(normKey)) {
+                            foundMap.set(normKey, {
+                                en: candidate,
+                                presetRu: null
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Упорядочиваем по порядку появления в исходном абзаце
+            const results = Array.from(foundMap.values()).sort((a, b) => {
+                return lowerParagraph.indexOf(a.en.toLowerCase()) - lowerParagraph.indexOf(b.en.toLowerCase());
+            });
+
+            return results.slice(0, 18);
+        }
+
+        function extractUniqueWords(paragraph) {
+            // Извлекаем слова (включая слова с дефисом или апострофом внутри, например don't, well-known)
+            const tokens = paragraph.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g) || [];
+            const seen = new Set();
+            const uniqueWords = [];
+
+            for (const token of tokens) {
+                const cleanLower = token.toLowerCase().replace(/^['’-]+|['’-]+$/g, '');
+                if (!cleanLower || seen.has(cleanLower)) continue;
+                seen.add(cleanLower);
+                uniqueWords.push(cleanLower);
+            }
+
+            return uniqueWords;
+        }
+
+        // =========================================================================
+        // 5. АВТОНОМНЫЙ КЛИЕНТСКИЙ ПЕРЕВОДЧИК (GOOGLE GTX + MYMEMORY + OFFLINE)
+        // =========================================================================
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Очистка перевода слова до одного основного значения
+        function cleanSingleWordTranslation(rawRu, fallbackEn) {
+            if (!rawRu) return OFFLINE_WORD_DICT[fallbackEn.toLowerCase()] || fallbackEn;
+            // Берем первый вариант до запятой/точки с запятой, убираем конечные точки и кавычки
+            let cleaned = rawRu
+                .split(/[,;/\n]/)[0]
+                .replace(/["«»().!?]/g, '')
+                .trim()
+                .toLowerCase();
+            return cleaned || OFFLINE_WORD_DICT[fallbackEn.toLowerCase()] || fallbackEn;
+        }
+
+        // Запрос к публичному Google Translate GTX (без ключей и CORS-проблем на GitHub Pages)
+        async function translateViaGoogleGTX(text) {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=${encodeURIComponent(text)}`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Google GTX HTTP ${response.status}`);
+            }
+            const data = await response.json();
+            if (!Array.isArray(data) || !Array.isArray(data[0])) {
+                throw new Error('Некорректный формат ответа Google GTX');
+            }
+            return data[0].map(segment => segment[0] || '').join('');
+        }
+
+        // Резервный запрос к публичному MyMemory API
+        async function translateViaMyMemory(text) {
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ru`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`MyMemory HTTP ${response.status}`);
+            }
+            const data = await response.json();
+            if (data?.responseStatus !== 200 || !data?.responseData?.translatedText) {
+                throw new Error(data?.responseDetails || 'Ошибка MyMemory API');
+            }
+            return data.responseData.translatedText;
+        }
+
+        // Перевод одной строки с автоматическим переключением на резервный источник
+        async function translateSingleItem(text, isSingleWord = false) {
+            const trimmed = text.trim();
+            if (!trimmed) return '';
+
+            try {
+                const ru = await translateViaGoogleGTX(trimmed);
+                if (ru && ru.trim()) {
+                    return isSingleWord ? cleanSingleWordTranslation(ru, trimmed) : ru.trim();
+                }
+            } catch (_) {
+                // Переходим ко второму источнику
+            }
+
+            try {
+                const ruFallback = await translateViaMyMemory(trimmed);
+                if (ruFallback && ruFallback.trim()) {
+                    return isSingleWord ? cleanSingleWordTranslation(ruFallback, trimmed) : ruFallback.trim();
+                }
+            } catch (_) {
+                // Переходим к офлайн-словарю
+            }
+
+            const lower = trimmed.toLowerCase();
+            if (KNOWN_PHRASES_DICT[lower]) return KNOWN_PHRASES_DICT[lower];
+            if (OFFLINE_WORD_DICT[lower]) return OFFLINE_WORD_DICT[lower];
+            return `[нет сети: ${trimmed}]`;
+        }
+
+        // Пакетный перевод массива строк с разделителем '\n' и поштучным fallback при сбое разметки
+        async function translateBatch(items, { isSingleWord = false, onProgress = null } = {}) {
+            if (!items || items.length === 0) return [];
+
+            // Разбиваем на чанки по ~900 символов, чтобы не превышать длину GET URL
+            const chunks = [];
+            let currentChunk = [];
+            let currentLength = 0;
+
+            for (const item of items) {
+                const cleanItem = item.replace(/\r?\n/g, ' ').trim();
+                if (currentLength + cleanItem.length + 2 > 900 && currentChunk.length > 0) {
+                    chunks.push(currentChunk);
+                    currentChunk = [];
+                    currentLength = 0;
+                }
+                currentChunk.push(cleanItem);
+                currentLength += cleanItem.length + 2;
+            }
+            if (currentChunk.length > 0) chunks.push(currentChunk);
+
+            const results = [];
+            let processedCount = 0;
+
+            for (const chunk of chunks) {
+                const joinedQuery = chunk.join('\n');
+                let chunkTranslated = null;
+
+                try {
+                    const rawBatch = await translateViaGoogleGTX(joinedQuery);
+                    const splitLines = rawBatch.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+                    if (splitLines.length === chunk.length) {
+                        chunkTranslated = splitLines.map((line, idx) =>
+                            isSingleWord ? cleanSingleWordTranslation(line, chunk[idx]) : line
+                        );
+                    }
+                } catch (_) {
+                    // Если пакетный Google GTX не сработал или сбилось число строк, используем поштучный fallback
+                }
+
+                if (!chunkTranslated) {
+                    chunkTranslated = [];
+                    for (const single of chunk) {
+                        const tr = await translateSingleItem(single, isSingleWord);
+                        chunkTranslated.push(tr);
+                        processedCount++;
+                        if (onProgress) onProgress(processedCount, items.length);
+                        await sleep(120);
+                    }
+                } else {
+                    processedCount += chunk.length;
+                    if (onProgress) onProgress(processedCount, items.length);
+                }
+
+                results.push(...chunkTranslated);
+            }
+
+            return results;
+        }
+
+        // =========================================================================
+        // 6. СБОРКА ИТОГОВОГО .TXT ФАЙЛА И ОТРИСОВКА КАРТОЧЕК
+        // =========================================================================
+        function buildFormattedText(data) {
+            const lines = [];
+
+            // БЛОК 1: Весь абзац на английском, сразу под ним перевод на русский
+            lines.push(data.paragraphEn.trim());
+            lines.push(data.paragraphRu.trim());
+
+            lines.push("");
+            lines.push("========================================");
+            lines.push("");
+
+            // БЛОК 2: Каждое предложение на английском, под ним перевод на русский, между парами одна пустая строка
+            data.sentences.forEach((item, index) => {
+                lines.push(item.en.trim());
+                lines.push(item.ru.trim());
+                if (index < data.sentences.length - 1) {
+                    lines.push("");
+                }
+            });
+
+            lines.push("");
+            lines.push("========================================");
+            lines.push("");
+
+            // БЛОК 3: Фразы, словосочетания, устойчивые выражения и перевод под ними через пустую строку
+            data.phrases.forEach((item, index) => {
+                lines.push(item.en.trim());
+                lines.push(item.ru.trim());
+                if (index < data.phrases.length - 1) {
+                    lines.push("");
+                }
+            });
+
+            lines.push("");
+            lines.push("========================================");
+            lines.push("");
+
+            // БЛОК 4: Все уникальные слова из абзаца — одно слово на английском и одно слово на русском под ним
+            data.words.forEach((item, index) => {
+                lines.push(item.en.trim());
+                lines.push(item.ru.trim());
+                if (index < data.words.length - 1) {
+                    lines.push("");
+                }
+            });
+
+            return lines.join("\n");
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function renderBlocksUI(data) {
+            // Блок 1
+            b1En.textContent = data.paragraphEn;
+            b1Ru.textContent = data.paragraphRu;
+
+            // Блок 2
+            b2Count.textContent = `${data.sentences.length} предл.`;
+            b2List.innerHTML = '';
+            data.sentences.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1';
+                div.innerHTML = `
+                    <div class="font-medium text-slate-900 dark:text-white">${escapeHtml(s.en)}</div>
+                    <div class="text-slate-600 dark:text-slate-400">${escapeHtml(s.ru)}</div>
+                `;
+                b2List.appendChild(div);
+            });
+
+            // Блок 3
+            b3Count.textContent = `${data.phrases.length} выраж.`;
+            b3List.innerHTML = '';
+            data.phrases.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1';
+                div.innerHTML = `
+                    <div class="font-semibold text-brand-700 dark:text-brand-400">${escapeHtml(p.en)}</div>
+                    <div class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm">${escapeHtml(p.ru)}</div>
+                `;
+                b3List.appendChild(div);
+            });
+
+            // Блок 4
+            b4Count.textContent = `${data.words.length} слов`;
+            b4List.innerHTML = '';
+            data.words.forEach(w => {
+                const div = document.createElement('div');
+                div.className = 'p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-center';
+                div.innerHTML = `
+                    <span class="font-semibold text-slate-900 dark:text-white truncate" title="${escapeHtml(w.en)}">${escapeHtml(w.en)}</span>
+                    <span class="text-slate-500 dark:text-slate-400 text-xs truncate" title="${escapeHtml(w.ru)}">${escapeHtml(w.ru)}</span>
+                `;
+                b4List.appendChild(div);
+            });
+        }
+
+        // =========================================================================
+        // 7. ГЛАВНЫЙ ОБРАБОТЧИК ЗАПУСКА
+        // =========================================================================
+        processBtn.addEventListener('click', async () => {
+            const rawInput = sourceText.value.trim();
+            if (!rawInput) {
+                showToast('Пожалуйста, вставьте текст на английском языке', 'error');
+                sourceText.focus();
+                return;
+            }
+
+            // Включаем индикатор прогресса
+            processBtn.disabled = true;
+            processIcon.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            processBtnText.textContent = 'Шаг 1/4: Перевод абзаца...';
+
+            emptyState.classList.add('hidden');
+            blocksPreview.classList.add('hidden');
+            blocksPreview.classList.remove('flex');
+            rawPreview.classList.add('hidden');
+            rawPreview.classList.remove('flex');
+            loadingState.classList.remove('hidden');
+            statusBadge.classList.add('hidden');
+
+            try {
+                // Шаг 1: Нормализация и перевод всего абзаца
+                const paragraphEn = normalizeParagraph(rawInput);
+                const paragraphRu = await translateSingleItem(paragraphEn, false);
+
+                // Шаг 2: Разбиение на предложения и пакетный перевод
+                processBtnText.textContent = 'Шаг 2/4: Перевод предложений...';
+                const sentenceEnList = extractSentences(paragraphEn);
+                const sentenceRuList = await translateBatch(sentenceEnList, {
+                    isSingleWord: false,
+                    onProgress: (done, total) => {
+                        processBtnText.textContent = `Шаг 2/4: Предложения (${done}/${total})...`;
+                    }
+                });
+                const sentences = sentenceEnList.map((en, i) => ({
+                    en,
+                    ru: sentenceRuList[i] || en
+                }));
+
+                // Шаг 3: Выделение устойчивых фраз и коллокаций
+                processBtnText.textContent = 'Шаг 3/4: Анализ фраз и идиом...';
+                const rawPhrases = extractPhrasesAndCollocations(paragraphEn, sentenceEnList);
+                const phrasesToTranslate = rawPhrases.filter(p => !p.presetRu).map(p => p.en);
+                const translatedNewPhrases = await translateBatch(phrasesToTranslate, {
+                    isSingleWord: false,
+                    onProgress: (done, total) => {
+                        processBtnText.textContent = `Шаг 3/4: Фразы (${done}/${total})...`;
+                    }
+                });
+
+                let dynamicPhraseIdx = 0;
+                const phrases = rawPhrases.map(p => {
+                    if (p.presetRu) {
+                        return { en: p.en, ru: p.presetRu };
+                    }
+                    const tr = translatedNewPhrases[dynamicPhraseIdx++] || p.en;
+                    return { en: p.en, ru: tr };
+                });
+
+                // Если в коротком тексте не нашлось ни одной фразы, добавляем биграммы значимых слов
+                if (phrases.length === 0 && sentenceEnList.length > 0) {
+                    const fallbackWords = extractUniqueWords(paragraphEn).filter(w => !STOP_WORDS.has(w));
+                    if (fallbackWords.length >= 2) {
+                        const fallbackPhrase = `${fallbackWords[0]} ${fallbackWords[1]}`;
+                        const fallbackTr = await translateSingleItem(fallbackPhrase, false);
+                        phrases.push({ en: fallbackPhrase, ru: fallbackTr });
+                    }
+                }
+
+                // Шаг 4: Пословный словарь уникальных слов
+                processBtnText.textContent = 'Шаг 4/4: Пословный словарь...';
+                const uniqueWordsEn = extractUniqueWords(paragraphEn);
+                const uniqueWordsRu = await translateBatch(uniqueWordsEn, {
+                    isSingleWord: true,
+                    onProgress: (done, total) => {
+                        processBtnText.textContent = `Шаг 4/4: Слова (${done}/${total})...`;
+                    }
+                });
+                const words = uniqueWordsEn.map((en, i) => ({
+                    en,
+                    ru: uniqueWordsRu[i] || OFFLINE_WORD_DICT[en] || en
+                }));
+
+                const parsedData = {
+                    paragraphEn,
+                    paragraphRu,
+                    sentences,
+                    phrases,
+                    words
+                };
+
+                // Формирование текста и обновление UI
+                generatedPlainText = buildFormattedText(parsedData);
+                rawOutputArea.value = generatedPlainText;
+                renderBlocksUI(parsedData);
+
+                loadingState.classList.add('hidden');
+                statusBadge.classList.remove('hidden');
+                copyBtn.disabled = false;
+                downloadBtn.disabled = false;
+
+                setViewMode(currentViewMode);
+                showToast('Разбор завершён! Файл готов к скачиванию.', 'success');
+
+            } catch (error) {
+                console.error(error);
+                loadingState.classList.add('hidden');
+                if (!generatedPlainText) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    setViewMode(currentViewMode);
+                }
+                showToast(`Ошибка при обработке: ${error.message}`, 'error');
+            } finally {
+                processBtn.disabled = false;
+                processIcon.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+                processBtnText.textContent = 'Обработать и создать файл';
+            }
+        });
+
+        // =========================================================================
+        // 8. КОПИРОВАНИЕ И СКАЧИВАНИЕ .TXT ФАЙЛА
+        // =========================================================================
+        copyBtn.addEventListener('click', () => {
+            if (!generatedPlainText) return;
+            try {
+                clipboardHelper.value = generatedPlainText;
+                clipboardHelper.select();
+                clipboardHelper.setSelectionRange(0, 999999);
+                const ok = document.execCommand('copy');
+                if (ok) {
+                    const originalLabel = copyBtnText.textContent;
+                    copyBtnText.textContent = 'Скопировано!';
+                    showToast('Текст скопирован в буфер обмена', 'success');
+                    setTimeout(() => {
+                        copyBtnText.textContent = originalLabel;
+                    }, 2000);
+                } else {
+                    throw new Error('Copy command failed');
+                }
+            } catch (e) {
+                showToast('Не удалось скопировать текст. Выделите его во вкладке «Вид .txt».', 'error');
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (!generatedPlainText) return;
+            try {
+                // Добавляем UTF-8 BOM (\uFEFF), чтобы кириллица корректно открывалась в Блокноте Windows
+                const blob = new Blob(["\uFEFF" + generatedPlainText], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                
+                link.href = url;
+                link.download = 'LgUkPstMsPrj121126_breakdown.txt';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                showToast('Файл LgUkPstMsPrj121126_breakdown.txt скачан', 'success');
+            } catch (e) {
+                showToast('Ошибка при создании файла для скачивания', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
