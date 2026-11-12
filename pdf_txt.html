@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF → TXT Конвертер документов</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение шрифта Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Библиотека PDF.js от Mozilla -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- Библиотека JSZip для пакетного скачивания архивом -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Верхняя панель -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">PDF → TXT Экстрактор</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Локальная конвертация без отправки на сервер</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Приватно (в браузере)
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+        <!-- Уведомление / Тост -->
+        <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+            <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium">
+                <svg id="toast-icon" class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span id="toast-message">Готово</span>
+            </div>
+        </div>
+
+        <!-- Панель настроек конвертации -->
+        <section class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
+                <!-- Настройка префикса -->
+                <div class="md:col-span-5">
+                    <label for="prefix-input" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Префикс имени файла
+                    </label>
+                    <div class="flex rounded-xl shadow-sm border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 overflow-hidden bg-slate-50">
+                        <input type="text" id="prefix-input" value="TXT" placeholder="TXT"
+                            class="w-24 px-3 py-2.5 bg-white text-slate-900 font-mono text-sm font-semibold border-r border-slate-200 focus:outline-none">
+                        <span class="px-3 py-2.5 text-sm text-slate-500 font-mono truncate select-none flex items-center">
+                            <span id="prefix-preview" class="text-indigo-600 font-semibold">TXT</span>имя_файла.txt
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Опции форматирования текста -->
+                <div class="md:col-span-7 flex flex-col sm:flex-row gap-3 sm:gap-5 sm:pb-2">
+                    <label class="inline-flex items-start gap-2.5 cursor-pointer select-none">
+                        <input type="checkbox" id="opt-unwrap" checked class="mt-1 w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                        <span class="text-sm text-slate-700 leading-snug">
+                            <strong class="font-medium text-slate-900 block">Склеивать строки в абзацы</strong>
+                            <span class="text-xs text-slate-500">Убирает искусственные переносы строк как в выгрузках PDF</span>
+                        </span>
+                    </label>
+
+                    <label class="inline-flex items-start gap-2.5 cursor-pointer select-none">
+                        <input type="checkbox" id="opt-pages" class="mt-1 w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                        <span class="text-sm text-slate-700 leading-snug">
+                            <strong class="font-medium text-slate-900 block">Разделители страниц</strong>
+                            <span class="text-xs text-slate-500">Добавлять метки страниц</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Зона загрузки файлов (Drag & Drop) -->
+        <section id="drop-zone" class="relative group cursor-pointer rounded-2xl border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-white hover:bg-indigo-50/30 transition-all duration-200 p-8 sm:p-12 text-center shadow-sm">
+            <input type="file" id="file-input" multiple class="hidden">
+            
+            <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:scale-105 group-hover:bg-indigo-100 transition-transform flex items-center justify-center">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+            </div>
+
+            <h2 class="text-lg font-semibold text-slate-900 mb-1">
+                Перетащите PDF-файлы сюда или нажмите для выбора
+            </h2>
+            <p class="text-sm text-slate-500 max-w-md mx-auto">
+                Поддерживается пакетная загрузка. Например, <span class="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">РУП_обсуждение.pdf</span> автоматически превратится в <span class="font-mono text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">TXTРУП_обсуждение.txt</span>
+            </p>
+        </section>
+
+        <!-- Панель действий для списка файлов (скрыта, пока нет файлов) -->
+        <div id="batch-actions" class="hidden flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white px-5 py-3.5 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="text-sm text-slate-600">
+                Обработано файлов: <span id="files-count" class="font-bold text-slate-900">0</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <button id="btn-clear-all" type="button" class="px-3.5 py-2 text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                    Очистить список
+                </button>
+                <button id="btn-download-zip" type="button" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-sm transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Скачать всё (ZIP)
+                </button>
+            </div>
+        </div>
+
+        <!-- Список сконвертированных файлов -->
+        <section id="files-list" class="space-y-3"></section>
+
+    </main>
+
+    <!-- Модальное окно предпросмотра текста -->
+    <div id="preview-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between gap-4 bg-slate-50">
+                <div class="min-w-0">
+                    <h3 id="modal-title" class="text-base font-bold text-slate-900 truncate">TXTname.txt</h3>
+                    <p id="modal-stats" class="text-xs text-slate-500 mt-0.5">0 символов</p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button id="modal-copy-btn" type="button" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg transition-colors">
+                        Копировать текст
+                    </button>
+                    <button id="modal-download-btn" type="button" class="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">
+                        Скачать .txt
+                    </button>
+                    <button id="modal-close-btn" type="button" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200/60 transition-colors" aria-label="Закрыть">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1 bg-white">
+                <pre id="modal-content" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация worker для PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Состояние приложения
+        const state = {
+            files: [], // { id, originalName, rawPages: string[][], pageCount, status, error }
+            prefix: 'TXT',
+            unwrapLines: true,
+            includePageMarkers: false,
+            activeModalFileId: null
+        };
+
+        // Элементы DOM
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const prefixInput = document.getElementById('prefix-input');
+        const prefixPreview = document.getElementById('prefix-preview');
+        const optUnwrap = document.getElementById('opt-unwrap');
+        const optPages = document.getElementById('opt-pages');
+        const batchActions = document.getElementById('batch-actions');
+        const filesCountEl = document.getElementById('files-count');
+        const filesListEl = document.getElementById('files-list');
+        const btnClearAll = document.getElementById('btn-clear-all');
+        const btnDownloadZip = document.getElementById('btn-download-zip');
+
+        // Элементы модального окна
+        const previewModal = document.getElementById('preview-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalStats = document.getElementById('modal-stats');
+        const modalContent = document.getElementById('modal-content');
+        const modalCopyBtn = document.getElementById('modal-copy-btn');
+        const modalDownloadBtn = document.getElementById('modal-download-btn');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        // Показ всплывающего уведомления
+        let toastTimeout;
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.textContent = message;
+            toastIcon.className = isError ? 'w-5 h-5 text-rose-400 shrink-0' : 'w-5 h-5 text-emerald-400 shrink-0';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Формирование итогового имени файла: name.pdf -> TXTname.txt
+        function getOutputFileName(originalName) {
+            const baseName = originalName.replace(/\.pdf$/i, '');
+            const cleanPrefix = state.prefix.replace(/[\\/:*?"<>|]/g, '');
+            return `${cleanPrefix}${baseName}.txt`;
+        }
+
+        // Обновление префикса в реальном времени
+        prefixInput.addEventListener('input', (e) => {
+            state.prefix = e.target.value;
+            prefixPreview.textContent = state.prefix;
+            renderFilesList();
+            if (state.activeModalFileId) {
+                const file = state.files.find(f => f.id === state.activeModalFileId);
+                if (file) modalTitle.textContent = getOutputFileName(file.originalName);
+            }
+        });
+
+        // Обновление настроек форматирования
+        optUnwrap.addEventListener('change', (e) => {
+            state.unwrapLines = e.target.checked;
+            renderFilesList();
+            refreshModalContent();
+        });
+
+        optPages.addEventListener('change', (e) => {
+            state.includePageMarkers = e.target.checked;
+            renderFilesList();
+            refreshModalContent();
+        });
+
+        // Обработка Drag & Drop и выбора файлов
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-indigo-500', 'bg-indigo-50/50');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+            if (e.dataTransfer.files?.length) {
+                handleFiles(e.dataTransfer.files);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files?.length) {
+                handleFiles(e.target.files);
+                fileInput.value = '';
+            }
+        });
+
+        // Главная функция обработки загруженных PDF
+        async function handleFiles(fileList) {
+            const incomingFiles = Array.from(fileList || []);
+
+            if (incomingFiles.length === 0) {
+                showToast('Файлы не найдены', true);
+                return;
+            }
+
+            let successCount = 0;
+
+            for (const file of incomingFiles) {
+                const fileEntry = {
+                    id: crypto.randomUUID ? crypto.randomUUID() : Date.now() + Math.random().toString(36).slice(2),
+                    originalName: file.name || 'document.pdf',
+                    rawPages: [],
+                    pageCount: 0,
+                    status: 'processing',
+                    error: null
+                };
+                state.files.unshift(fileEntry);
+                renderFilesList();
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Проверяем сигнатуру PDF в первых 1024 байтах файла (%PDF-)
+                    const headerBytes = new Uint8Array(arrayBuffer.slice(0, 1024));
+                    const headerStr = String.fromCharCode.apply(null, headerBytes);
+                    if (!headerStr.includes('%PDF-')) {
+                        throw new Error('Файл не содержит структуру PDF (отсутствует заголовок %PDF)');
+                    }
+
+                    const extracted = await extractStructuredLinesFromPDF(arrayBuffer);
+                    fileEntry.rawPages = extracted.pages;
+                    fileEntry.pageCount = extracted.pageCount;
+                    fileEntry.status = 'done';
+                    successCount++;
+                } catch (err) {
+                    console.error('Ошибка парсинга PDF:', err);
+                    fileEntry.status = 'error';
+                    fileEntry.error = err.message || 'Не удалось прочитать PDF';
+                }
+
+                renderFilesList();
+            }
+
+            if (successCount > 0) {
+                showToast(`Готово! Обработано файлов: ${successCount}`);
+            } else {
+                showToast('Не удалось распознать PDF-документ', true);
+            }
+        }
+
+        // Извлечение текста из PDF с учетом координат X/Y и отступов между строками
+        async function extractStructuredLinesFromPDF(arrayBuffer) {
+            const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+            const pdf = await loadingTask.promise;
+            const pages = [];
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const textContent = await page.getTextContent();
+                const items = textContent.items;
+
+                // Группируем текстовые фрагменты по строкам (координата Y)
+                const lines = [];
+                let currentLine = null;
+
+                for (const item of items) {
+                    const str = item.str;
+                    if (!str && !item.hasEOL) continue;
+
+                    const y = item.transform[5];
+                    const x = item.transform[4];
+                    const height = Math.abs(item.transform[3]) || Math.abs(item.transform[0]) || 12;
+
+                    // Если разница по Y меньше половины высоты шрифта — это та же строка
+                    if (!currentLine || Math.abs(currentLine.y - y) > height * 0.55) {
+                        if (currentLine) lines.push(currentLine);
+                        currentLine = {
+                            y: y,
+                            height: height,
+                            parts: [{ x, str, width: item.width || 0 }]
+                        };
+                    } else {
+                        currentLine.parts.push({ x, str, width: item.width || 0 });
+                    }
+                }
+                if (currentLine) lines.push(currentLine);
+
+                // Сортируем фрагменты внутри каждой строки слева направо и собираем строку
+                const formattedPageLines = lines.map(line => {
+                    line.parts.sort((a, b) => a.x - b.x);
+                    let lineStr = '';
+                    let prevEnd = null;
+
+                    for (const part of line.parts) {
+                        if (prevEnd !== null) {
+                            const gap = part.x - prevEnd;
+                            // Добавляем пробел, если между словами есть визуальный зазор
+                            if (gap > line.height * 0.22 && !lineStr.endsWith(' ') && !part.str.startsWith(' ')) {
+                                lineStr += ' ';
+                            }
+                        }
+                        lineStr += part.str;
+                        prevEnd = part.x + part.width;
+                    }
+
+                    return {
+                        y: line.y,
+                        height: line.height,
+                        text: lineStr.trim()
+                    };
+                }).filter(l => l.text.length > 0);
+
+                pages.push(formattedPageLines);
+            }
+
+            return { pages, pageCount: pdf.numPages };
+        }
+
+        // Форматирование извлеченных строк в чистый читаемый текст
+        function formatDocumentText(fileEntry) {
+            if (!fileEntry || !fileEntry.rawPages) return '';
+
+            const pageTexts = fileEntry.rawPages.map((lines, idx) => {
+                if (lines.length === 0) return '';
+
+                let result = '';
+                if (!state.unwrapLines) {
+                    // Режим сохранения оригинальных переносов строк PDF
+                    result = lines.map(l => l.text).join('\n');
+                } else {
+                    // Умная склейка строк внутри абзацев с сохранением списков, заголовков и пауз
+                    const paragraphs = [];
+                    let currentPara = lines[0].text;
+
+                    for (let i = 1; i < lines.length; i++) {
+                        const prev = lines[i - 1];
+                        const curr = lines[i];
+                        const verticalGap = Math.abs(prev.y - curr.y);
+                        const avgHeight = (prev.height + curr.height) / 2;
+
+                        // Признаки нового абзаца или пункта списка
+                        const isBullet = /^[•●▪◦\-–—*]\s|^\d+[\.)]\s|^(Q1|Q2|U|R|I|І|Фз|Фо)[:\s]/.test(curr.text);
+                        const isLargeGap = verticalGap > avgHeight * 1.45;
+                        const isShortHeader = prev.text.length < 48 && !/[.,;:–—-]$/.test(prev.text) && /^[А-ЯЁA-Z0-9•]/.test(curr.text);
+
+                        if (isBullet || isLargeGap || isShortHeader) {
+                            paragraphs.push(currentPara);
+                            currentPara = curr.text;
+                        } else {
+                            // Склейка переноса слова через дефис
+                            if (/[а-яёa-z]-$/i.test(currentPara) && /^[а-яёa-z]/i.test(curr.text)) {
+                                currentPara = currentPara.slice(0, -1) + curr.text;
+                            } else {
+                                currentPara += ' ' + curr.text;
+                            }
+                        }
+                    }
+                    paragraphs.push(currentPara);
+                    result = paragraphs.join('\n\n');
+                }
+
+                if (state.includePageMarkers) {
+                    return `--- Страница ${idx + 1} ---\n${result}`;
+                }
+                return result;
+            }).filter(Boolean);
+
+            return pageTexts.join('\n\n');
+        }
+
+        // Скачивание одного TXT файла
+        function downloadSingleTxt(fileEntry) {
+            const text = formatDocumentText(fileEntry);
+            const fileName = getOutputFileName(fileEntry.originalName);
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Скачивание всех готовых файлов одним ZIP-архивом
+        btnDownloadZip.addEventListener('click', async () => {
+            const readyFiles = state.files.filter(f => f.status === 'done');
+            if (readyFiles.length === 0) return;
+
+            if (readyFiles.length === 1) {
+                downloadSingleTxt(readyFiles[0]);
+                return;
+            }
+
+            try {
+                const zip = new JSZip();
+                const usedNames = new Map();
+
+                for (const file of readyFiles) {
+                    let outName = getOutputFileName(file.originalName);
+                    // Защита от дубликатов имен в архиве
+                    if (usedNames.has(outName)) {
+                        const count = usedNames.get(outName) + 1;
+                        usedNames.set(outName, count);
+                        outName = outName.replace(/\.txt$/i, `_${count}.txt`);
+                    } else {
+                        usedNames.set(outName, 1);
+                    }
+                    zip.file(outName, formatDocumentText(file));
+                }
+
+                const blob = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${state.prefix || 'TXT'}_documents.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('ZIP-архив скачан');
+            } catch (err) {
+                console.error(err);
+                showToast('Ошибка при создании ZIP-архива', true);
+            }
+        });
+
+        // Очистка всего списка
+        btnClearAll.addEventListener('click', () => {
+            state.files = [];
+            renderFilesList();
+        });
+
+        // Удаление одного файла
+        function removeFile(id) {
+            state.files = state.files.filter(f => f.id !== id);
+            renderFilesList();
+        }
+
+        // Открытие модального окна предпросмотра
+        function openPreviewModal(id) {
+            const file = state.files.find(f => f.id === id);
+            if (!file || file.status !== 'done') return;
+
+            state.activeModalFileId = id;
+            refreshModalContent();
+            previewModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function refreshModalContent() {
+            if (!state.activeModalFileId) return;
+            const file = state.files.find(f => f.id === state.activeModalFileId);
+            if (!file) return;
+
+            const text = formatDocumentText(file);
+            modalTitle.textContent = getOutputFileName(file.originalName);
+            modalStats.textContent = `Страниц: ${file.pageCount} • Символов: ${text.length.toLocaleString('ru-RU')}`;
+            modalContent.textContent = text;
+        }
+
+        function closePreviewModal() {
+            state.activeModalFileId = null;
+            previewModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        modalCloseBtn.addEventListener('click', closePreviewModal);
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) closePreviewModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !previewModal.classList.contains('hidden')) {
+                closePreviewModal();
+            }
+        });
+
+        // Копирование текста из модального окна
+        modalCopyBtn.addEventListener('click', () => {
+            const textarea = document.createElement('textarea');
+            textarea.value = modalContent.textContent;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Текст скопирован в буфер обмена');
+            } catch (err) {
+                showToast('Не удалось скопировать текст', true);
+            }
+            document.body.removeChild(textarea);
+        });
+
+        // Скачивание файла прямо из модального окна
+        modalDownloadBtn.addEventListener('click', () => {
+            if (!state.activeModalFileId) return;
+            const file = state.files.find(f => f.id === state.activeModalFileId);
+            if (file) downloadSingleTxt(file);
+        });
+
+        // Экранирование HTML для безопасного вывода имен файлов
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Отрисовка списка файлов
+        function renderFilesList() {
+            if (state.files.length === 0) {
+                batchActions.classList.add('hidden');
+                batchActions.classList.remove('flex');
+                filesListEl.innerHTML = '';
+                return;
+            }
+
+            batchActions.classList.remove('hidden');
+            batchActions.classList.add('flex');
+            const doneCount = state.files.filter(f => f.status === 'done').length;
+            filesCountEl.textContent = `${doneCount} из ${state.files.length}`;
+
+            filesListEl.innerHTML = state.files.map(file => {
+                const outputName = getOutputFileName(file.originalName);
+
+                if (file.status === 'processing') {
+                    return `
+                        <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-center justify-between gap-4 shadow-sm animate-pulse">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-900 truncate">${escapeHtml(file.originalName)}</p>
+                                    <p class="text-xs text-indigo-600 mt-0.5">Извлечение текста из PDF...</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (file.status === 'error') {
+                    return `
+                        <div class="bg-white rounded-2xl border border-rose-200 p-4 sm:p-5 flex items-center justify-between gap-4 shadow-sm">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-900 truncate">${escapeHtml(file.originalName)}</p>
+                                    <p class="text-xs text-rose-600 mt-0.5">${escapeHtml(file.error)}</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeFile('${file.id}')" class="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors" title="Удалить">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                const text = formatDocumentText(file);
+                const charCount = text.length.toLocaleString('ru-RU');
+
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200 hover:border-slate-300 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm transition-colors">
+                        <div class="flex items-start sm:items-center gap-3.5 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 mb-0.5">
+                                    <span class="truncate max-w-[200px] sm:max-w-xs">${escapeHtml(file.originalName)}</span>
+                                    <span>→</span>
+                                </div>
+                                <p class="text-sm sm:text-base font-bold text-indigo-700 font-mono truncate">${escapeHtml(outputName)}</p>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    Страниц: <span class="font-medium text-slate-700">${file.pageCount}</span> • 
+                                    Символов: <span class="font-medium text-slate-700">${charCount}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                            <button type="button" onclick="openPreviewModal('${file.id}')" class="px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                                Просмотр
+                            </button>
+                            <button type="button" onclick="downloadSingleTxtById('${file.id}')" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Скачать TXT
+                            </button>
+                            <button type="button" onclick="removeFile('${file.id}')" class="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors" title="Убрать из списка">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Вспомогательная обертка для вызова из onclick
+        function downloadSingleTxtById(id) {
+            const file = state.files.find(f => f.id === id);
+            if (file) downloadSingleTxt(file);
+        }
+    </script>
+</body>
+</html>
