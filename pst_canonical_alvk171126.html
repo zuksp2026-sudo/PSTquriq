@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PST Canonical Decomposition — Final ALVK</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']],processEscapes:true}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+body{max-width:940px;margin:48px auto;padding:0 24px;color:#182230;font:18px/1.65 Georgia,serif}
+header{text-align:center;margin-bottom:3em}
+h1{line-height:1.25}
+h2{margin-top:2em;border-bottom:1px solid #ddd;padding-bottom:6px}
+h3{font-size:1em}
+section{padding:4px 18px;margin:20px 0;border-left:3px solid #d7dfeb}
+.box{background:#f7f8fa;border-left:4px solid #345;padding:.8rem 1rem;margin:1.2rem 0}
+.theorem{border-left-color:#2b6cb0}
+.definition{border-left-color:#345}
+.axiom{border-left-color:#a33}
+.remark{border-left-color:#d69e2e}
+.proof{border-left-style:dotted}
+.equation{overflow-x:auto;padding:4px 0}
+li{margin:8px 0}
+@media print{body{margin:0;max-width:none;font-size:11pt}}
+</style>
+</head>
+<body>
+<article>
+<header>
+<h1>PST Canonical Decomposition</h1>
+<p><strong>Final ALVK Version</strong><br>Spartac Cebanu<br>November 17, 2026</p>
+</header>
+
+<section class="abstract">
+<h3>Abstract</h3>
+<p>This document states the strongest defensible form of the Process–Structure Transition (PST) decomposition. It does not claim that every conceivable process has exactly five nodes and four transitions. Instead, it proves that every process in a precisely defined class of deterministic scalar dynamical systems admits a canonical PST realization</p>
+<div class="equation">\[x\longrightarrow\nabla F\longrightarrow F\longrightarrow V_F\longrightarrow y.\]</div>
+<p>The chain has five nodes and four transitions. Its existence follows from the potential representation of a first-order ordinary differential equation and the Picard–Lindelöf theorem. Its minimality is proved relative to explicit PST axioms, not as an unrestricted law of nature.</p>
+</section>
+
+<section>
+<h3>1. Scope and main claim</h3>
+<p>Let a process be a deterministic evolution from an initial state \(x\) to a realized trajectory \(y\). The unrestricted statement</p>
+<div class="equation">\[\text{every process }x\to y\text{ decomposes into five nodes and four transitions}\]</div>
+<p>is not a mathematical theorem. It is an empirical or metaphysical claim. The provable PST statement is conditional:</p>
+<div class="equation">\[\text{every PST-representable deterministic process admits the canonical five-node decomposition.}\]</div>
+<p>The central PST chain is</p>
+<div class="equation">\[x\longrightarrow\nabla F\longrightarrow F\longrightarrow V_F\longrightarrow y.\]</div>
+<p>Here \(V_F\) is an independent field of potential change. It must not be defined as \(dF(y(t),t)/dt\) if it is then used to reconstruct \(y(t)\); that would create a circular dependency.</p>
+</section>
+
+<section class="definition">
+<h3>2. PST categories and operators</h3>
+<p>Let \(\mathcal O\) be the category of objects: initial states, structures, and realized trajectories. Let \(\mathcal P\) be the category of projections: gradients, vector fields, functional descriptions, and dynamical representations.</p>
+<p>Let</p>
+<div class="equation">\[\Phi_z:\mathcal O\longrightarrow\mathcal P,\qquad\Phi_o:\mathcal P\longrightarrow\mathcal O\]</div>
+<p>be the forgetting and freeing functors. A PST functorial trajectory is defined by</p>
+<div class="equation">\[U=\Phi_z(Q_1),\qquad R=\Phi_o(U),\qquad I=\Phi_z(R),\qquad Q_2=\Phi_o(I).\]</div>
+<p>Therefore,</p>
+<div class="equation">\[Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).\]</div>
+<p>The node-type pattern is</p>
+<div class="equation">\[\mathsf O-\mathsf P-\mathsf O-\mathsf P-\mathsf O.\]</div>
+<p>The adjunction \(\Phi_o\dashv\Phi_z\), if assumed, provides</p>
+<div class="equation">\[\eta:\operatorname{Id}_{\mathcal P}\Longrightarrow\Phi_z\circ\Phi_o,\qquad\varepsilon:\Phi_o\circ\Phi_z\Longrightarrow\operatorname{Id}_{\mathcal O},\]</div>
+<p>and the natural bijection</p>
+<div class="equation">\[\operatorname{Hom}_{\mathcal O}(\Phi_oP,O)\cong\operatorname{Hom}_{\mathcal P}(P,\Phi_zO).\]</div>
+<p>However, the adjunction does not by itself prove that every process has exactly five nodes. That statement requires the PST axioms below.</p>
+</section>
+
+<section class="definition">
+<h3>3. Scalar dynamical arena</h3>
+<p>Let \(\Omega\subseteq\mathbb R\) be open and let \(I=[t_0,t_f]\). Consider the scalar Cauchy problem</p>
+<div class="equation">\[\dot y(t)=G(y(t),t),\qquad y(t_0)=x\in\Omega.\]</div>
+<p>Assume that there exist functions \(F\in C^2(\Omega\times I)\) and \(V_F\in C^1(\Omega\times I)\) such that</p>
+<div class="equation">\[G(y,t)=\frac{V_F(y,t)-\partial_tF(y,t)}{\nabla F(y,t)},\qquad\nabla F(y,t)\neq0.\]</div>
+<p>Then the process is called <strong>PST-representable</strong>.</p>
+</section>
+
+<section class="theorem">
+<h3>4. PST realization theorem</h3>
+<div class="box theorem">
+<p><strong>Theorem 4.1 — PST realization.</strong>  
+Every PST-representable scalar deterministic process admits a canonical PST decomposition</p>
+<div class="equation">\[x\longrightarrow\nabla F\longrightarrow F\longrightarrow V_F\longrightarrow y.\]</div>
+<p>The decomposition has exactly five nodes and four transitions.</p>
+</div>
+
+<div class="box proof">
+<p><strong>Proof.</strong>  
+By the PST-representability condition,</p>
+<div class="equation">\[\dot y(t)=\frac{V_F(y(t),t)-\partial_tF(y(t),t)}{\nabla F(y(t),t)}.\]</div>
+<p>Define</p>
+<div class="equation">\[Q_1=x,\qquad U=\nabla F,\qquad R=F,\qquad I=V_F,\qquad Q_2=y.\]</div>
+<p>Then the chain</p>
+<div class="equation">\[x\longrightarrow\nabla F\longrightarrow F\longrightarrow V_F\longrightarrow y\]</div>
+<p>has five nodes and four transitions. Since the right-hand side is locally Lipschitz in \(y\), the Picard–Lindelöf theorem gives a unique local solution satisfying \(y(t_0)=x\). Thus the final node \(y\) is not an additional assumption: it is the integral curve generated by the preceding PST data.  
+\(\square\)</p>
+</div>
+</section>
+
+<section class="theorem">
+<h3>5. Minimality theorem</h3>
+<div class="box theorem">
+<p><strong>Theorem 5.1 — PST grammatical minimality.</strong>  
+Assume that a PST-compatible connected process satisfies the following axioms:</p>
+<ol>
+<li>It begins and ends in \(\mathsf O\).</li>
+<li>Adjacent nodes have different types.</li>
+<li>It contains a structure \(R\) distinct from the initial and terminal states.</li>
+<li>It contains a realization \(I\) distinct from \(R\).</li>
+<li>Direct transitions \(\mathsf O\to\mathsf O\) and \(\mathsf P\to\mathsf P\) are forbidden.</li>
+<li>Removal of any node destroys deterministic reconstructibility of the terminal trajectory.</li>
+</ol>
+<p>Then every such process has at least five nodes and four transitions. If it is defined as a PST functorial trajectory, it has exactly five nodes and four transitions.</p>
+</div>
+
+<div class="box proof">
+<p><strong>Proof.</strong>  
+Because the process begins and ends in \(\mathsf O\), and adjacent nodes must alternate types, its type sequence must have the form</p>
+<div class="equation">\[\mathsf O-\mathsf P-\mathsf O-\mathsf P-\mathsf O.\]</div>
+<p>A shorter alternating sequence,</p>
+<div class="equation">\[\mathsf O-\mathsf P-\mathsf O,\]</div>
+<p>contains only one intermediate object. It cannot simultaneously contain a structure \(R\) distinct from the endpoints and a realization \(I\) distinct from \(R\). Hence at least four transitions are required. Four transitions generate exactly five nodes.  
+\(\square\)</p>
+</div>
+</section>
+
+<section class="theorem">
+<h3>6. Gauge equivalence</h3>
+<div class="box theorem">
+<p><strong>Theorem 6.1 — PST gauge preservation.</strong>  
+Let</p>
+<div class="equation">\[G(y,t)=\frac{\varphi(y,t)}{M(y,t)},\qquad M(y,t)>0.\]</div>
+<p>Assume locally that \(\nabla F(y,t)>0\), and define</p>
+<div class="equation">\[M(y,t)=\frac{1}{\nabla F(y,t)},\qquad\varphi(y,t)=\frac{G(y,t)}{\nabla F(y,t)}.\]</div>
+<p>Then</p>
+<div class="equation">\[\frac{\varphi(y,t)}{M(y,t)}=G(y,t).\]</div>
+<p>Moreover, the rescaling</p>
+<div class="equation">\[(M,\varphi)\mapsto(\lambda M,\lambda\varphi),\qquad\lambda>0,\]</div>
+<p>corresponds to the potential rescaling</p>
+<div class="equation">\[F\mapsto\frac{F}{\lambda},\]</div>
+<p>and leaves the trajectory \(y(t)\) invariant.</p>
+</div>
+
+<div class="box proof">
+<p><strong>Proof.</strong>  
+We compute</p>
+<div class="equation">\[\frac{\varphi}{M}=\frac{G/\nabla F}{1/\nabla F}=G.\]</div>
+<p>If \(F\mapsto F/\lambda\), then \(\nabla F\mapsto(1/\lambda)\nabla F\). Hence</p>
+<div class="equation">\[M\mapsto\lambda M,\qquad\varphi\mapsto\lambda\varphi.\]</div>
+<p>Therefore \(\varphi/M=G\) is unchanged, and the solution \(y(t)\) is unchanged.  
+\(\square\)</p>
+</div>
+</section>
+
+<section class="remark">
+<h3>7. Cross-domain realization</h3>
+<p>The same five-node grammar appears in several operator spaces:</p>
+<table>
+<tr><th>PST</th><th>ODE / phase space</th><th>Hamiltonian mechanics</th><th>Laplace theory</th><th>Category theory</th></tr>
+<tr><td>\(x\)</td><td>Initial condition</td><td>\((q_0,p_0)\)</td><td>Time-domain input</td><td>Object \(\mathcal O\)</td></tr>
+<tr><td>\(\nabla F\)</td><td>Gradient</td><td>Hamiltonian vector field</td><td>Laplace transform</td><td>Projection \(\mathcal P\)</td></tr>
+<tr><td>\(F\)</td><td>Potential</td><td>Hamiltonian \(H\)</td><td>Transfer function</td><td>Structure \(\mathcal O\)</td></tr>
+<tr><td>\(V_F\)</td><td>Flux field</td><td>Hamiltonian flow</td><td>Transformed response</td><td>Projection \(\mathcal P\)</td></tr>
+<tr><td>\(y\)</td><td>Integral curve</td><td>Trajectory</td><td>Time-domain output</td><td>Object \(\mathcal O\)</td></tr>
+</table>
+<p>The Laplace transform is therefore a special linear, time-invariant realization of the PST grammar, not its universal foundation.</p>
+</section>
+
+<section class="remark">
+<h3>8. What is not claimed</h3>
+<p>The theorem does not assert that every conceivable process is PST-representable. It does not assert that every process must have exactly five nodes. It does not derive the five-node structure from the adjunction alone.</p>
+<p>The exact result is:</p>
+<div class="equation">\[\text{PST-representable process}\Longrightarrow\text{canonical five-node PST decomposition}.\]</div>
+<p>The converse is false without additional axioms: a five-node diagram alone does not guarantee that an arbitrary empirical process is PST-representable.</p>
+</section>
+
+<section class="remark">
+<h3>9. Final ALVK statement</h3>
+<div class="box theorem">
+<p><strong>Final statement.</strong>  
+For every PST-representable deterministic process, the evolution</p>
+<div class="equation">\[x\longrightarrow y\]</div>
+<p>admits the canonical decomposition</p>
+<div class="equation">\[x\longrightarrow\nabla F\longrightarrow F\longrightarrow V_F\longrightarrow y.\]</div>
+<p>The decomposition has five nodes and four transitions. Its existence follows from the potential representation of the governing ODE and Picard–Lindelöf local existence and uniqueness. Its minimality follows from the PST axioms of type alternation, distinct structure and realization, and deterministic reconstructibility.</p>
+</div>
+</section>
+
+<footer>
+<p>Part of the PST / QURIQ framework. Rendered with MathJax.</p>
+</footer>
+</article>
+</body>
+</html>
