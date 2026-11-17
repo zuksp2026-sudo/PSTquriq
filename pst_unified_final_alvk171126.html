@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PST Canonical Decomposition — Unified Final ALVK</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+body{max-width:980px;margin:48px auto;padding:0 24px;color:#182230;font:18px/1.65 Georgia,serif}
+header{text-align:center;margin-bottom:3em}
+h1{line-height:1.25}
+h2{margin-top:2em;border-bottom:1px solid #ddd;padding-bottom:6px}
+h3{font-size:1em}
+section{padding:4px 18px;margin:20px 0;border-left:3px solid #d7dfeb}
+.box{background:#f7f8fa;border-left:4px solid #345;padding:.8rem 1rem;margin:1.2rem 0}
+.theorem{border-left-color:#2b6cb0}
+.definition{border-left-color:#345}
+.axiom{border-left-color:#a33}
+.remark{border-left-color:#d69e2e}
+.hypothesis{border-left-color:#7a3ea1}
+.proof{border-left-style:dotted}
+.equation{overflow-x:auto;padding:4px 0}
+li{margin:8px 0}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.95rem}
+th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f7f8fa}
+@media print{body{margin:0;max-width:none;font-size:11pt}}
+</style>
+</head>
+<body>
+<article>
+<header>
+<h1>PST Canonical Decomposition</h1>
+<p><strong>Unified Final ALVK Version</strong><br>Spartac Cebanu<br>November 17, 2026</p>
+</header>
+
+<section class="abstract">
+<h3>Abstract</h3>
+<p>This document establishes the strongest defensible form of the Process–Structure Transition (PST) decomposition. It does not claim that every conceivable process has exactly five nodes and four transitions. Instead, it proves that every process in a precisely defined class of deterministic dynamical systems admits a canonical PST realization:</p>
+<div class="equation">\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y.\]</div>
+<p>The chain has five nodes and four transitions. Its existence follows from the potential representation of a first-order ordinary differential equation, the GENERIC structure of nonequilibrium dynamics, and the Picard–Lindelöf theorem. Its minimality is proved relative to explicit PST axioms, not as an unrestricted law of nature. Its uniqueness is relative to a fixed PST representation.</p>
+</section>
+
+<section>
+<h3>1. Scope and main claim</h3>
+<p>Let a process be a deterministic evolution from an initial state \(x\) to a realized trajectory \(y\). The unrestricted statement</p>
+<div class="equation">\[\text{every process }x\to y\text{ decomposes into five nodes and four transitions}\]</div>
+<p>is not a mathematical theorem. It is an empirical or metaphysical claim. The provable PST statement is conditional:</p>
+<div class="equation">\[\text{every PST-representable deterministic process admits the canonical five-node decomposition.}\]</div>
+<p>The central PST chain is</p>
+<div class="equation">\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y.\]</div>
+<p>Here \(dE\) is the differential of an energy-like potential, \(dS\) is the differential of an entropy-like potential, \((L,M)\) is the pair of reversible and irreversible structure operators, \(v\) is the induced flow, and \(y\) is the realized trajectory.</p>
+</section>
+
+<section class="definition">
+<h3>2. PST categories and operators</h3>
+<p>Let \(\mathcal O\) be the category of objects: initial states, structures, and realized trajectories. Let \(\mathcal P\) be the category of phase carriers: covectors, vector fields, functional descriptions, and dynamical representations.</p>
+<p>Let</p>
+<div class="equation">\[\Phi_z:\mathcal O\longrightarrow\mathcal P,\qquad\Phi_o:\mathcal P\longrightarrow\mathcal O\]</div>
+<p>be the forgetting and freeing functors. A PST functorial trajectory is defined by</p>
+<div class="equation">\[U=\Phi_z(Q_1),\qquad R=\Phi_o(U),\qquad I=\Phi_z(R),\qquad Q_2=\Phi_o(I).\]</div>
+<p>Therefore,</p>
+<div class="equation">\[Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).\]</div>
+<p>The node-type pattern is</p>
+<div class="equation">\[\mathsf O-\mathsf P-\mathsf O-\mathsf P-\mathsf O.\]</div>
+<p>If the adjunction \(\Phi_o\dashv\Phi_z\) is assumed, then it provides</p>
+<div class="equation">\[\eta:\operatorname{Id}_{\mathcal P}\Longrightarrow\Phi_z\circ\Phi_o,\qquad\varepsilon:\Phi_o\circ\Phi_z\Longrightarrow\operatorname{Id}_{\mathcal O},\]</div>
+<p>and the natural bijection</p>
+<div class="equation">\[\operatorname{Hom}_{\mathcal O}(\Phi_oP,O)\cong\operatorname{Hom}_{\mathcal P}(P,\Phi_zO).\]</div>
+<p>However, the adjunction does not by itself prove that every process has exactly five nodes. That statement requires the PST axioms below.</p>
+</section>
+
+<section class="definition">
+<h3>3. The dynamical arena</h3>
+<p>Let \(M\) be a smooth state manifold and let \(I=[t_0,t_f]\). Consider the Cauchy problem</p>
+<div class="equation">\[\dot y(t)=G(y(t),t),\qquad y(t_0)=x\in M.\]</div>
+<p>Assume that there exist smooth potentials \(E,S:M\times I\to\mathbb R\) and smooth operators</p>
+<div class="equation">\[L(y,t):T_y^*M\longrightarrow T_yM,\qquad M(y,t):T_y^*M\longrightarrow T_yM\]</div>
+<p>such that</p>
+<div class="equation">\[G(y,t)=L(y,t)\,dE(y,t)+M(y,t)\,dS(y,t).\]</div>
+<p>Then the process is called <strong>PST-representable</strong>.</p>
+<p>Here \(dE_y,dS_y\in T_y^*M\) are covectors, while \(v(y,t)\in T_yM\) is a vector. The operators \(L_y\) and \(M_y\) translate covectors into vectors.</p>
+</section>
+
+<section class="theorem">
+<h3>4. PST realization theorem</h3>
+<div class="box theorem">
+<p><strong>Theorem 4.1 — PST realization.</strong><br>Every PST-representable deterministic process admits a canonical PST decomposition</p>
+<div class="equation">\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y.\]</div>
+<p>The decomposition has exactly five nodes and four transitions.</p>
+</div>
+<div class="box proof">
+<p><strong>Proof.</strong><br>By the PST-representability condition,</p>
+<div class="equation">\[\dot y(t)=L(y(t),t)\,dE(y(t),t)+M(y(t),t)\,dS(y(t),t).\]</div>
+<p>Define</p>
+<div class="equation">\[Q_1=x,\qquad U=(dE,dS),\qquad R=(L,M),\qquad I=v,\qquad Q_2=y.\]</div>
+<p>Then the chain</p>
+<div class="equation">\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y\]</div>
+<p>has five nodes and four transitions. The first transition extracts the covector field from the state. The second transition supplies the structure operators. The third transition produces the vector field. The fourth transition integrates the vector field into the trajectory.</p>
+<p>If the resulting right-hand side is locally Lipschitz in \(y\), then the Picard–Lindelöf theorem gives a unique local solution satisfying \(y(t_0)=x\). Thus the final node \(y\) is not an additional assumption: it is the integral curve generated by the preceding PST data. \(\square\)</p>
+</div>
+</section>
+
+<section class="theorem">
+<h3>5. Relative uniqueness</h3>
+<div class="box theorem">
+<p><strong>Theorem 5.1 — Relative uniqueness.</strong><br>Fix a PST representation by specifying</p>
+<div class="equation">\[E,\qquad S,\qquad L,\qquad M.\]</div>
+<p>Then the induced PST decomposition</p>
+<div class="equation">\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y\]</div>
+<p>is unique.</p>
+</div>
+<div class="box proof">
+<p><strong>Proof.</strong><br>Once \(E\), \(S\), \(L\), and \(M\) are fixed, the covectors \(dE\) and \(dS\), the structure pair \((L,M)\), and the flow</p>
+<div class="equation">\[v=L\,dE+M\,dS\]</div>
+<p>are uniquely determined. The trajectory \(y\) is then uniquely determined locally by the initial condition \(y(t_0)=x\), provided that the induced vector field is locally Lipschitz in \(y\). \(\square\)</p>
+</div>
+<div class="box remark">
+<p><strong>Remark.</strong><br>Without fixing \(E,S,L,M\), the decomposition is not unique: different potentials and different conductance structures may generate the same trajectory. Therefore, PST uniqueness is always relative to a fixed PST representation.</p>
+</div>
+</section>
+
+<section class="theorem">
+<h3>6. Minimality theorem</h3>
+<div class="box theorem">
+<p><strong>Theorem 6.1 — PST grammatical minimality.</strong><br>Assume that a PST-compatible connected process satisfies the following axioms:</p>
+<ol>
+<li>It begins and ends in \(\mathsf O\).</li>
+<li>Adjacent nodes have different types.</li>
+<li>It contains a structure \(R\) distinct from the initial and terminal states.</li>
+<li>It contains a realization \(I\) distinct from \(R\).</li>
+<li>Direct transitions \(\mathsf O\to\mathsf O\) and \(\mathsf P\to\mathsf P\) are forbidden.</li>
+<li>Removal of any node destroys deterministic reconstructibility of the terminal trajectory.</li>
+</ol>
+<p>Then every such process has at least five nodes and four transitions. If it is defined as a PST functorial trajectory, it has exactly five nodes and four transitions.</p>
+</div>
+<div class="box proof">
+<p><strong>Proof.</strong><br>Because the process begins and ends in \(\mathsf O\), and adjacent nodes must alternate types, its type sequence must have the form</p>
+<div class="equation">\[\mathsf O-\mathsf P-\mathsf O-\mathsf P-\mathsf O.\]</div>
+<p>A shorter alternating sequence,</p>
+<div class="equation">\[\mathsf O-\mathsf P-\mathsf O,\]</div>
+<p>contains only one intermediate object. It cannot simultaneously contain a structure \(R\) distinct from the endpoints and a realization \(I\) distinct from \(R\). Hence at least four transitions are required. Four transitions generate exactly five nodes. \(\square\)</p>
+</div>
+</section>
+
+<section class="theorem">
+<h3>7. Dissipative specialization</h3>
+<div class="box theorem">
+<p><strong>Theorem 7.1 — Onsager specialization.</strong><br>Assume that the entropy contribution is absent and that the structure operator \(K\) is symmetric and positive definite:</p>
+<div class="equation">\[K=K^{\mathsf T}>0.\]</div>
+<p>If</p>
+<div class="equation">\[v=-K\,dE,\]</div>
+<p>then the process admits the dissipative PST decomposition</p>
+<div class="equation">\[x\longrightarrow dE\longrightarrow K\longrightarrow v\longrightarrow y.\]</div>
+<p>Moreover, along the trajectory,</p>
+<div class="equation">\[\frac{dE}{dt}=dE(v)=-dE(K\,dE)<0\]</div>
+<p>whenever \(dE\ne0\).</p>
+</div>
+<div class="box proof">
+<p><strong>Proof.</strong><br>Because \(K\) is positive definite,</p>
+<div class="equation">\[dE(K\,dE)>0\]</div>
+<p>whenever \(dE\ne0\). Therefore,</p>
+<div class="equation">\[\frac{dE}{dt}=-dE(K\,dE)<0.\]</div>
+<p>Thus the dissipative PST chain has a nontrivial thermodynamic consequence: the potential decreases along the realized motion. \(\square\)</p>
+</div>
+</section>
+
+<section class="theorem">
+<h3>8. Gauge equivalence</h3>
+<div class="box theorem">
+<p><strong>Theorem 8.1 — PST gauge preservation.</strong><br>Let</p>
+<div class="equation">\[G(y,t)=\frac{\varphi(y,t)}{M(y,t)},\qquad M(y,t)>0.\]</div>
+<p>Assume locally that \(\nabla E(y,t)>0\), and define</p>
+<div class="equation">\[M(y,t)=\frac{1}{\nabla E(y,t)},\qquad\varphi(y,t)=\frac{G(y,t)}{\nabla E(y,t)}.\]</div>
+<p>Then</p>
+<div class="equation">\[\frac{\varphi(y,t)}{M(y,t)}=G(y,t).\]</div>
+<p>Moreover, the rescaling</p>
+<div class="equation">\[(M,\varphi)\mapsto(\lambda M,\lambda\varphi),\qquad\lambda>0,\]</div>
+<p>corresponds to the potential rescaling</p>
+<div class="equation">\[E\mapsto\frac{E}{\lambda},\]</div>
+<p>and leaves the trajectory \(y(t)\) invariant.</p>
+</div>
+<div class="box proof">
+<p><strong>Proof.</strong><br>We compute</p>
+<div class="equation">\[\frac{\varphi}{M}=\frac{G/\nabla E}{1/\nabla E}=G.\]</div>
+<p>If \(E\mapsto E/\lambda\), then \(\nabla E\mapsto(1/\lambda)\nabla E\). Hence</p>
+<div class="equation">\[M\mapsto\lambda M,\qquad\varphi\mapsto\lambda\varphi.\]</div>
+<p>Therefore \(\varphi/M=G\) is unchanged, and the solution \(y(t)\) is unchanged. \(\square\)</p>
+</div>
+</section>
+
+<section class="remark">
+<h3>9. Cross-domain realization</h3>
+<p>The same five-node grammar appears in several operator spaces:</p>
+<table>
+<tr><th>PST</th><th>ODE / phase space</th><th>Hamiltonian mechanics</th><th>Laplace theory</th><th>Category theory</th></tr>
+<tr><td>\(x\)</td><td>Initial condition</td><td>\((q_0,p_0)\)</td><td>Time-domain input</td><td>Object \(\mathcal O\)</td></tr>
+<tr><td>\(dE,dS\)</td><td>Generalized forces</td><td>Hamiltonian vector field</td><td>Laplace transform</td><td>Projection \(\mathcal P\)</td></tr>
+<tr><td>\(L,M\)</td><td>Reversible and irreversible structure</td><td>Hamiltonian structure</td><td>Transfer function</td><td>Structure \(\mathcal O\)</td></tr>
+<tr><td>\(v\)</td><td>Flow field</td><td>Hamiltonian flow</td><td>Transformed response</td><td>Projection \(\mathcal P\)</td></tr>
+<tr><td>\(y\)</td><td>Integral curve</td><td>Trajectory</td><td>Time-domain output</td><td>Object \(\mathcal O\)</td></tr>
+</table>
+<p>The Laplace transform is therefore a special linear, time-invariant realization of the PST grammar, not its universal foundation.</p>
+</section>
+
+<section class="remark">
+<h3>10. Resource-theoretic interpretation</h3>
+<div class="box remark">
+<p><strong>Resource interpretation.</strong><br>In a symmetric monoidal resource theory, a catalyst is a resource that participates in a transition and is returned unchanged. The PST minimal structure can therefore be interpreted as</p>
+<div class="equation">\[Q_1+R_{\min}\longrightarrow Q_2+R_{\min}.\]</div>
+<p>This does not mean that the transition is physically free of cost. It means that \(R_{\min}\) is not consumed by the transition, while the transition may be enabled by an external resource gradient.</p>
+</div>
+</section>
+
+<section class="remark">
+<h3>11. What is not claimed</h3>
+<p>The theorem does not assert that every conceivable process is PST-representable. It does not assert that every process must have exactly five nodes. It does not derive the five-node structure from the adjunction alone.</p>
+<p>The exact result is:</p>
+<div class="equation">\[\text{PST-representable process}\Longrightarrow\text{canonical five-node PST decomposition}.\]</div>
+<p>The converse is false without additional axioms: a five-node diagram alone does not guarantee that an arbitrary empirical process is PST-representable.</p>
+</section>
+
+<section class="hypothesis">
+<h3>12. Meso-palindrome hypothesis</h3>
+<div class="box hypothesis">
+<p><strong>Hypothesis — Meso-transition pattern.</strong><br>Each PST edge may admit an internal meso-level unfolding of the form</p>
+<div class="equation">\[\varepsilon\longrightarrow\eta\longrightarrow\eta\longrightarrow\varepsilon.\]</div>
+<p>This pattern is not a consequence of the adjunction \(\Phi_o\dashv\Phi_z\). It is a separate PST hypothesis or axiom.</p>
+<p>In particular, \(\eta\) and \(\varepsilon\) are natural transformations, not ordinary morphisms of the PST chain. Therefore, the expression</p>
+<div class="equation">\[\varepsilon\to\eta\to\eta\to\varepsilon\]</div>
+<p>must be interpreted at a separate meso-level, with its own objects, morphisms, composition rule, and boundary geometry.</p>
+</div>
+</section>
+
+<section class="remark">
+<h3>13. Final ALVK statement</h3>
+<div class="box theorem">
+<p><strong>Final statement.</strong><br>For every PST-representable deterministic process, the evolution</p>
+<div class="equation">\[x\longrightarrow y\]</div>
+<p>admits the canonical decomposition</p>
+<div class="equation">\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y.\]</div>
+<p>The decomposition has five nodes and four transitions. Its existence follows from the potential representation of the governing ODE, the GENERIC separation of reversible and irreversible dynamics, and Picard–Lindelöf local existence and uniqueness. Its minimality follows from the PST axioms of type alternation, distinct structure and realization, and deterministic reconstructibility. Its uniqueness is relative to a fixed PST representation.</p>
+</div>
+</section>
+
+<footer>
+<p>Part of the PST / QURIQ framework. Rendered with MathJax.</p>
+</footer>
+</article>
+</body>
+</html>
