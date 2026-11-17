@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PST as a Categorical Functorial Trajectory</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['$$', '$$']],
+    processEscapes: true
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+body{max-width:900px;margin:2rem auto;padding:0 1rem;font-family:Georgia,serif;line-height:1.6;color:#111}
+h1,h2,h3{font-family:Helvetica,Arial,sans-serif}
+ theorem,.lemma,.proposition,.corollary,.definition,.axiom,.remark{border-left:4px solid #345;background:#f7f8fa;padding:.8rem 1rem;margin:1.2rem 0}
+ .proof{border-left:4px solid #999;background:#fbfbfb;padding:.8rem 1rem;margin:1rem 0}
+ .label{font-weight:bold}
+</style>
+</head>
+<body>
+<h1>PST as a Categorical Functorial Trajectory</h1>
+<p><strong>Spartac Cebanu</strong><br>November 17, 2026</p>
+
+<h2>Abstract</h2>
+<p>This document gives a corrected categorical formulation of the PST process structure</p>
+$$
+Q_1\longrightarrow U\longrightarrow R\longrightarrow I\longrightarrow Q_2.
+$$
+<p>If PST is defined as a functorial trajectory, its operator pattern is</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o,
+$$
+<p>read left-to-right as a sequence of functor applications. Equivalently, the final PST state is given by the functor composite</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+<p>The document also states precisely what follows from the adjunction</p>
+$$
+\Phi_o\dashv\Phi_z
+$$
+<p>and what requires separate PST axioms. This document treats PST as a functorial model. Determinism is not implied by functoriality alone and requires additional assumptions on the categories, functors, initial state, and absence of nondeterministic choices.</p>
+
+<h2>Purpose</h2>
+<p>This document gives a corrected categorical formulation of the PST process structure</p>
+$$
+Q_1\longrightarrow U\longrightarrow R\longrightarrow I\longrightarrow Q_2.
+$$
+<p>The central result is that, if PST is defined as a functorial trajectory, then its operator pattern is</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o,
+$$
+<p>read left-to-right as a sequence of functor applications. Equivalently, the final PST state is given by the functor composite</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+<p>The document also states precisely what follows from the adjunction</p>
+$$
+\Phi_o\dashv\Phi_z
+$$
+<p>and what requires separate PST axioms.</p>
+
+<h2>Basic distinction</h2>
+<p>In ordinary category theory, a morphism exists only inside one category. Therefore, if \(\mathcal O\) and \(\mathcal P\) are distinct categories, an expression such as</p>
+$$
+Q_1\to U:\mathcal O\to\mathcal P
+$$
+<p>is not a morphism in either category.</p>
+<p>There are two correct ways to formalize PST:</p>
+<ol>
+<li><strong>Typed-graph PST:</strong> the arrows are formal typed transitions between objects of different categories.</li>
+<li><strong>Functorial PST:</strong> the arrows are applications of functors between \(\mathcal O\) and \(\mathcal P\).</li>
+</ol>
+<p>This document uses the second, stronger formulation.</p>
+
+<h2>PST categories and functors</h2>
+<div class="definition"><span class="label">Definition (PST categories).</span>
+<p>Let \(\mathcal O\) be the category of <em>objects</em>: material configurations, structures, or accumulated states.</p>
+<p>Let \(\mathcal P\) be the category of <em>projections</em>: gradients, vectors, functional descriptions, or dynamical representations.</p>
+</div>
+
+<div class="definition"><span class="label">Definition (PST functors).</span>
+<p>Let</p>
+$$
+\Phi_z:\mathcal O\longrightarrow\mathcal P
+$$
+<p>be the <em>forgetting</em> functor, which extracts a projection from an object.</p>
+<p>Let</p>
+$$
+\Phi_o:\mathcal P\longrightarrow\mathcal O
+$$
+<p>be the <em>freeing</em> functor, which constructs an object from a projection.</p>
+</div>
+
+<div class="remark"><span class="label">Remark.</span>
+<p>The notation is chosen as follows:</p>
+$$
+\Phi_z=\text{forgetting functor},
+\qquad
+\Phi_o=\text{freeing functor}.
+$$
+<p>Thus:</p>
+$$
+\Phi_z:\mathcal O\to\mathcal P,
+\qquad
+\Phi_o:\mathcal P\to\mathcal O.
+$$
+</div>
+
+<div class="remark"><span class="label">Remark (Sequential PST notation).</span>
+<p>Throughout this document, the semicolon notation</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o
+$$
+<p>denotes left-to-right sequential application of functors.</p>
+<p>Thus, for an object \(X\in\mathcal O\),</p>
+$$
+(\Phi_z;\Phi_o;\Phi_z;\Phi_o)(X)
+=
+\Phi_o(\Phi_z(\Phi_o(\Phi_z(X)))).
+$$
+<p>Equivalently, in ordinary functor-composition notation,</p>
+$$
+(\Phi_z;\Phi_o;\Phi_z;\Phi_o)(X)
+=
+(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(X).
+$$
+</div>
+
+<h2>PST as a functorial trajectory</h2>
+<div class="axiom"><span class="label">Axiom (PST functorial trajectory).</span>
+<p>A PST process is a directed chain</p>
+$$
+Q_1\longrightarrow U\longrightarrow R\longrightarrow I\longrightarrow Q_2
+$$
+<p>defined by the following functorial equations:</p>
+$$
+U=\Phi_z(Q_1),
+$$
+$$
+R=\Phi_o(U),
+$$
+$$
+I=\Phi_z(R),
+$$
+$$
+Q_2=\Phi_o(I).
+$$
+</div>
+
+<div class="remark"><span class="label">Remark.</span>
+<p>This axiom is stronger than merely saying that \(Q_1,R,Q_2\in\operatorname{Ob}(\mathcal O)\) and \(U,I\in\operatorname{Ob}(\mathcal P)\). It says that each node is obtained from the previous one by a fixed functor. Therefore, the PST chain is not merely a typed graph; it is a functorial trajectory.</p>
+</div>
+
+<div class="lemma"><span class="label">Lemma (Node typing).</span>
+<p>In a PST functorial trajectory,</p>
+$$
+Q_1,R,Q_2\in\operatorname{Ob}(\mathcal O),
+\qquad
+U,I\in\operatorname{Ob}(\mathcal P).
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>Since \(\Phi_z:\mathcal O\to\mathcal P\) and \(Q_1\in\mathcal O\), we have</p>
+$$
+U=\Phi_z(Q_1)\in\mathcal P.
+$$
+<p>Since \(\Phi_o:\mathcal P\to\mathcal O\) and \(U\in\mathcal P\), we have</p>
+$$
+R=\Phi_o(U)\in\mathcal O.
+$$
+<p>Since \(\Phi_z:\mathcal O\to\mathcal P\) and \(R\in\mathcal O\), we have</p>
+$$
+I=\Phi_z(R)\in\mathcal P.
+$$
+<p>Since \(\Phi_o:\mathcal P\to\mathcal O\) and \(I\in\mathcal P\), we have</p>
+$$
+Q_2=\Phi_o(I)\in\mathcal O.
+$$
+<p>Therefore:</p>
+$$
+Q_1,R,Q_2\in\mathcal O,
+\qquad
+U,I\in\mathcal P.
+$$
+</div>
+
+<div class="corollary"><span class="label">Corollary (PST node-type alternation).</span>
+<p>Every PST functorial trajectory has node types</p>
+$$
+\mathsf O-\mathsf P-\mathsf O-\mathsf P-\mathsf O.
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>By the node-typing lemma,</p>
+$$
+Q_1,R,Q_2\in\mathcal O,
+\qquad
+U,I\in\mathcal P.
+$$
+<p>Therefore:</p>
+$$
+\operatorname{type}(Q_1)=\mathsf O,
+\qquad
+\operatorname{type}(U)=\mathsf P,
+\qquad
+\operatorname{type}(R)=\mathsf O,
+\qquad
+\operatorname{type}(I)=\mathsf P,
+\qquad
+\operatorname{type}(Q_2)=\mathsf O.
+$$
+<p>Hence:</p>
+$$
+Q_1-U-R-I-Q_2
+=
+\mathsf O-\mathsf P-\mathsf O-\mathsf P-\mathsf O.
+$$
+</div>
+
+<h2>PST composition theorem</h2>
+<div class="theorem"><span class="label">Theorem (PST functor-composition theorem).</span>
+<p>Assume that PST is a functorial trajectory:</p>
+$$
+U=\Phi_z(Q_1),
+\qquad
+R=\Phi_o(U),
+\qquad
+I=\Phi_z(R),
+\qquad
+Q_2=\Phi_o(I).
+$$
+<p>Then</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>By the PST functorial-trajectory axiom,</p>
+$$
+U=\Phi_z(Q_1).
+$$
+<p>Therefore,</p>
+$$
+R=\Phi_o(U)=\Phi_o(\Phi_z(Q_1)).
+$$
+<p>Therefore,</p>
+$$
+I=\Phi_z(R)=\Phi_z(\Phi_o(\Phi_z(Q_1))).
+$$
+<p>Therefore,</p>
+$$
+Q_2=\Phi_o(I)
+=
+\Phi_o(\Phi_z(\Phi_o(\Phi_z(Q_1)))).
+$$
+<p>Using functor composition, this is</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+</div>
+
+<div class="theorem"><span class="label">Theorem (PST operator-pattern theorem).</span>
+<p>Assume that PST is a functorial trajectory. Then the operator pattern of PST is the sequence of functor applications</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o.
+$$
+<p>Equivalently, the PST chain is generated by the alternating application</p>
+$$
+\Phi_z,\qquad\Phi_o,\qquad\Phi_z,\qquad\Phi_o.
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>By the PST functorial-trajectory axiom,</p>
+$$
+U=\Phi_z(Q_1),
+$$
+$$
+R=\Phi_o(U),
+$$
+$$
+I=\Phi_z(R),
+$$
+$$
+Q_2=\Phi_o(I).
+$$
+<p>Therefore, the first transition is the application of \(\Phi_z\) to \(Q_1\):</p>
+$$
+Q_1\mapsto U=\Phi_z(Q_1).
+$$
+<p>The second transition is the application of \(\Phi_o\) to \(U\):</p>
+$$
+U\mapsto R=\Phi_o(U).
+$$
+<p>The third transition is the application of \(\Phi_z\) to \(R\):</p>
+$$
+R\mapsto I=\Phi_z(R).
+$$
+<p>The fourth transition is the application of \(\Phi_o\) to \(I\):</p>
+$$
+I\mapsto Q_2=\Phi_o(I).
+$$
+<p>Hence, the PST process has operator pattern</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o.
+$$
+</div>
+
+<div class="remark"><span class="label">Remark (Correct reading of the PST chain).</span>
+<p>The expression</p>
+$$
+Q_1\longrightarrow U\longrightarrow R\longrightarrow I\longrightarrow Q_2
+$$
+<p>is a chain of object-to-object transitions.</p>
+<p>The expression</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o
+$$
+<p>is the sequence of functors generating those transitions.</p>
+<p>Therefore, the following expression is not a categorical identity between objects and functors:</p>
+$$
+Q_1\longrightarrow U\longrightarrow R\longrightarrow I\longrightarrow Q_2
+=
+\Phi_z\longrightarrow\Phi_o\longrightarrow\Phi_z\longrightarrow\Phi_o.
+$$
+<p>The correct statement is:</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+<p>Alternatively, one may say that the PST chain has operator pattern</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o.
+$$
+</div>
+
+<h2>Adjunction and PST</h2>
+<div class="definition"><span class="label">Definition (Adjunction).</span>
+<p>Let</p>
+$$
+\Phi_o:\mathcal P\to\mathcal O,
+\qquad
+\Phi_z:\mathcal O\to\mathcal P.
+$$
+<p>An adjunction</p>
+$$
+\Phi_o\dashv\Phi_z
+$$
+<p>consists of natural transformations</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O},
+$$
+<p>such that the triangle identities hold.</p>
+</div>
+
+<div class="proposition"><span class="label">Proposition (Unit and counit).</span>
+<p>If \(\Phi_o\dashv\Phi_z\), then:</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>This is part of the definition of an adjunction. For an adjunction \(\Phi_o\dashv\Phi_z\), the unit is</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+<p>and the counit is</p>
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+<p>Thus \(\eta\) and \(\varepsilon\) are canonical natural transformations associated with the adjunction.</p>
+</div>
+
+<div class="proposition"><span class="label">Proposition (Triangle identities).</span>
+<p>If \(\Phi_o\dashv\Phi_z\), then for every \(P\in\mathcal P\) and \(O\in\mathcal O\),</p>
+$$
+\varepsilon_{\Phi_o(P)}
+\circ
+\Phi_o(\eta_P)
+=
+\operatorname{id}_{\Phi_o(P)},
+$$
+$$
+\Phi_z(\varepsilon_O)
+\circ
+\eta_{\Phi_z(O)}
+=
+\operatorname{id}_{\Phi_z(O)}.
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>These are the standard triangle identities of an adjunction. For an adjunction \(\Phi_o\dashv\Phi_z\), the unit and counit satisfy:</p>
+$$
+(\varepsilon\Phi_o)\circ(\Phi_o\eta)
+=
+\operatorname{id}_{\Phi_o},
+$$
+$$
+(\Phi_z\varepsilon)\circ(\eta\Phi_z)
+=
+\operatorname{id}_{\Phi_z}.
+$$
+<p>Equivalently, for every \(P\in\mathcal P\) and \(O\in\mathcal O\):</p>
+$$
+\varepsilon_{\Phi_o(P)}
+\circ
+\Phi_o(\eta_P)
+=
+\operatorname{id}_{\Phi_o(P)},
+$$
+$$
+\Phi_z(\varepsilon_O)
+\circ
+\eta_{\Phi_z(O)}
+=
+\operatorname{id}_{\Phi_z(O)}.
+$$
+</div>
+
+<div class="proposition"><span class="label">Proposition (Hom-set bijection).</span>
+<p>If \(\Phi_o\dashv\Phi_z\), then for every \(P\in\mathcal P\) and \(O\in\mathcal O\) there is a natural bijection</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O)).
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>By the hom-set definition of adjunction, \(\Phi_o\dashv\Phi_z\) means that for every \(P\in\mathcal P\) and \(O\in\mathcal O\) there is a natural bijection</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O)).
+$$
+<p>This is the standard form:</p>
+$$
+\operatorname{Hom}_{\mathcal D}(F(X),Y)
+\cong
+\operatorname{Hom}_{\mathcal C}(X,G(Y)),
+$$
+<p>where</p>
+$$
+F=\Phi_o:\mathcal P\to\mathcal O,
+\qquad
+G=\Phi_z:\mathcal O\to\mathcal P.
+$$
+<p>Therefore:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O)).
+$$
+</div>
+
+<div class="remark"><span class="label">Remark (Correct PST substitution).</span>
+<p>Taking \(P=U\) and \(O=Q_1\), the Hom-set bijection gives:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(U),Q_1)
+\cong
+\operatorname{Hom}_{\mathcal P}(U,\Phi_z(Q_1)).
+$$
+<p>Since \(R=\Phi_o(U)\), this becomes:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(R,Q_1)
+\cong
+\operatorname{Hom}_{\mathcal P}(U,\Phi_z(Q_1)).
+$$
+<p>Since \(\Phi_z(Q_1)=U\), this may also be written as:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(R,Q_1)
+\cong
+\operatorname{Hom}_{\mathcal P}(U,U).
+$$
+<p>This is a formal Hom-set correspondence; it does not by itself assert a physical current or a causal relation from \(R\) to \(Q_1\).</p>
+<p>Taking \(P=I\) and \(O=R\), the Hom-set bijection gives:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(I),R)
+\cong
+\operatorname{Hom}_{\mathcal P}(I,\Phi_z(R)).
+$$
+<p>Since \(Q_2=\Phi_o(I)\), this becomes:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(Q_2,R)
+\cong
+\operatorname{Hom}_{\mathcal P}(I,\Phi_z(R)).
+$$
+<p>Since \(I=\Phi_z(R)\), this may also be written as:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(Q_2,R)
+\cong
+\operatorname{Hom}_{\mathcal P}(I,I).
+$$
+<p>Thus the correct PST Hom-correspondences are:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(R,Q_1)
+\cong
+\operatorname{Hom}_{\mathcal P}(U,U),
+$$
+$$
+\operatorname{Hom}_{\mathcal O}(Q_2,R)
+\cong
+\operatorname{Hom}_{\mathcal P}(I,I).
+$$
+</div>
+
+<h2>Epsilon, eta, and PST edges</h2>
+<div class="remark"><span class="label">Remark (Level distinction).</span>
+<p>The operators \(\eta\) and \(\varepsilon\) are natural transformations:</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+<p>Therefore, they are not morphisms of the PST chain and cannot be identified with its edges.</p>
+<p>The PST chain consists of applications of functors:</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o.
+$$
+<p>The operators \(\eta\) and \(\varepsilon\) live between composites of these functors.</p>
+</div>
+
+<div class="remark"><span class="label">Remark (PST operator assignment).</span>
+<p>In PST, the following assignment is used as a labeling convention:</p>
+$$
+\varepsilon\leftrightarrow\Phi_z,
+\qquad
+\eta\leftrightarrow\Phi_o.
+$$
+<p>This means:</p>
+<ul>
+<li>\(\varepsilon\) is associated with the forgetting functor \(\Phi_z\).</li>
+<li>\(\eta\) is associated with the freeing functor \(\Phi_o\).</li>
+</ul>
+<p>However, categorically, both \(\eta\) and \(\varepsilon\) depend on both functors:</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+<p>Therefore, the PST assignment is a mnemonic or labeling convention, not a categorical identity.</p>
+</div>
+
+<h2>Adjunction data along a PST trajectory</h2>
+<div class="theorem"><span class="label">Theorem (Adjunction data along a PST trajectory).</span>
+<p>Assume that PST is a functorial trajectory and that</p>
+$$
+\Phi_o\dashv\Phi_z.
+$$
+<p>Then the adjunction provides canonical natural transformations</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+<p>Moreover, for every \(P\in\mathcal P\) and \(O\in\mathcal O\),</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O)).
+$$
+<p>In particular, along the PST trajectory, the adjunction provides the components</p>
+$$
+\eta_U:U\longrightarrow\Phi_z(\Phi_o(U)),
+$$
+$$
+\varepsilon_R:\Phi_o(\Phi_z(R))\longrightarrow R,
+$$
+$$
+\eta_I:I\longrightarrow\Phi_z(\Phi_o(I)),
+$$
+$$
+\varepsilon_{Q_1}:\Phi_o(\Phi_z(Q_1))\longrightarrow Q_1.
+$$
+<p>Since \(R=\Phi_o(\Phi_z(Q_1))\), the counit component at \(Q_1\) is</p>
+$$
+\varepsilon_{Q_1}:R\longrightarrow Q_1.
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>By assumption, \(\Phi_o\dashv\Phi_z\). Therefore, there exist canonical natural transformations</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+<p>These satisfy the triangle identities:</p>
+$$
+\varepsilon_{\Phi_o(P)}
+\circ
+\Phi_o(\eta_P)
+=
+\operatorname{id}_{\Phi_o(P)},
+$$
+$$
+\Phi_z(\varepsilon_O)
+\circ
+\eta_{\Phi_z(O)}
+=
+\operatorname{id}_{\Phi_z(O)}.
+$$
+<p>Therefore, the adjunction gives the natural Hom-set bijection</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O)).
+$$
+<p>Since \(U,I\in\mathcal P\) and \(Q_1,R,Q_2\in\mathcal O\), the adjunction components are available at the PST states:</p>
+$$
+\eta_U:U\longrightarrow\Phi_z(\Phi_o(U)),
+$$
+$$
+\varepsilon_R:\Phi_o(\Phi_z(R))\longrightarrow R,
+$$
+$$
+\eta_I:I\longrightarrow\Phi_z(\Phi_o(I)),
+$$
+$$
+\varepsilon_{Q_1}:\Phi_o(\Phi_z(Q_1))\longrightarrow Q_1.
+$$
+<p>Because \(R=\Phi_o(\Phi_z(Q_1))\), we obtain</p>
+$$
+\varepsilon_{Q_1}:R\longrightarrow Q_1.
+$$
+</div>
+
+<h2>Main result</h2>
+<div class="theorem"><span class="label">Theorem (Final PST categorical theorem).</span>
+<p>Assume:</p>
+<ol>
+<li>\(\mathcal O\) and \(\mathcal P\) are categories.</li>
+<li>\(\Phi_z:\mathcal O\to\mathcal P\) and \(\Phi_o:\mathcal P\to\mathcal O\) are functors.</li>
+<li>A PST process is a functorial trajectory:</li>
+</ol>
+$$
+U=\Phi_z(Q_1),
+\qquad
+R=\Phi_o(U),
+\qquad
+I=\Phi_z(R),
+\qquad
+Q_2=\Phi_o(I).
+$$
+<ol start="4">
+<li>\(\Phi_o\dashv\Phi_z\) is an adjunction.</li>
+</ol>
+<p>Then:</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+<p>Furthermore, the PST process has operator pattern</p>
+$$
+\Phi_z;\Phi_o;\Phi_z;\Phi_o.
+$$
+<p>Moreover, the adjunction provides:</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O},
+$$
+<p>and the Hom-set bijection:</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O)).
+$$
+</div>
+
+<div class="proof"><span class="label">Proof.</span>
+<p>By the PST functorial-trajectory axiom,</p>
+$$
+U=\Phi_z(Q_1),
+$$
+$$
+R=\Phi_o(U),
+$$
+$$
+I=\Phi_z(R),
+$$
+$$
+Q_2=\Phi_o(I).
+$$
+<p>Substituting successively,</p>
+$$
+R=\Phi_o(\Phi_z(Q_1)),
+$$
+$$
+I=\Phi_z(\Phi_o(\Phi_z(Q_1))),
+$$
+$$
+Q_2=\Phi_o(\Phi_z(\Phi_o(\Phi_z(Q_1)))).
+$$
+<p>Therefore,</p>
+$$
+Q_2=(\Phi_o\circ\Phi_z\circ\Phi_o\circ\Phi_z)(Q_1).
+$$
+<p>Thus the PST functor-composition theorem is proved.</p>
+<p>By the adjunction \(\Phi_o\dashv\Phi_z\), there exist:</p>
+$$
+\eta:\operatorname{Id}_{\mathcal P}
+\Longrightarrow
+\Phi_z\circ\Phi_o,
+$$
+$$
+\varepsilon:\Phi_o\circ\Phi_z
+\Longrightarrow
+\operatorname{Id}_{\mathcal O}.
+$$
+<p>Moreover, by the Hom-set characterization of the adjunction,</p>
+$$
+\operatorname{Hom}_{\mathcal O}(\Phi_o(P),O)
+\cong
+\operatorname{Hom}_{\mathcal P}(P,\Phi_z(O))
+$$
+<p>for every \(P\in\mathcal P\) and \(O\in\mathcal O\). Thus the final PST categorical theorem is proved.</p>
+</div>
+
+<h2>What is not proved</h2>
+<div class="remark"><span class="label">Remark (What is not proved).</span>
+<p>The preceding theorems do not prove the following without additional PST axioms:</p>
+<ul>
+<li>That every process must have exactly five nodes and four edges.</li>
+<li>That \(Q_1\) must be raw material and \(Q_2\) must be an autonomous product.</li>
+<li>That \(R\) must be minimal.</li>
+<li>That polarity must be \(\mathrm{off}-\mathrm{on}-\mathrm{on}-\mathrm{off}\).</li>
+<li>That every edge must internally unfold as \(\varepsilon-\eta-\eta-\varepsilon\).</li>
+<li>That the existence of a Hom-morphism necessarily implies a physical current.</li>
+</ul>
+<p>These require separate PST axioms or empirical hypotheses.</p>
+</div>
+
+</body>
+</html>
