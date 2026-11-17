@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALVK Canonical PST Zigzag Theorem</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    processEscapes: true
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+body{max-width:980px;margin:48px auto;padding:0 24px;color:#182230;font:18px/1.65 Georgia,serif}
+h1,h2{line-height:1.25}
+h2{margin-top:2em;border-bottom:1px solid #ddd;padding-bottom:6px}
+section{padding:4px 18px;margin:20px 0;border-left:3px solid #d7dfeb}
+.box{background:#f7f8fa;border-left:4px solid #345;padding:.8rem 1rem;margin:1.2rem 0}
+.theorem{border-left-color:#2b6cb0}
+.equation{overflow-x:auto;padding:4px 0}
+li{margin:8px 0}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.95rem}
+th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f7f8fa}
+</style>
+</head>
+<body>
+<article>
+<header style="text-align:center;margin-bottom:3em">
+<h1>ALVK Canonical PST Zigzag Theorem</h1>
+<p><strong>Unified statement</strong><br>Spartac Cebanu<br>November 17, 2026</p>
+</header>
+<section class="theorem">
+<h2>Main theorem</h2>
+<div class="box theorem">
+<p><strong>Theorem — ALVK Canonical PST Zigzag.</strong><br>
+Let \(\mathbf{PST}\) be the \(2\)-category whose objects are process-states, whose \(1\)-morphisms are process-transitions, and whose \(2\)-morphisms are admissible reorganisations of transitions.</p>
+<p>Define the <em>free PST zigzag</em> \(Z_{\mathrm{PST}}\) as the walking \(2\)-categorical structure</p>
+<div class="equation">\[
+\mathsf O
+\xrightarrow{\;\alpha\;}
+\mathsf P
+\xrightarrow{\;\beta\;}
+\mathsf O
+\xrightarrow{\;\gamma\;}
+\mathsf P
+\xrightarrow{\;\delta\;}
+\mathsf O,
+\]</div>
+<p>with five nodes and four generating transitions \(\alpha,\beta,\gamma,\delta\).</p>
+<p>A deterministic process \(x\to y\) is called <em>PST-representable</em> if it admits a factorisation</p>
+<div class="equation">\[
+x
+\longrightarrow
+\nabla F
+\longrightarrow
+F
+\longrightarrow
+F'
+\longrightarrow
+y.
+\]</div>
+<p>Then the following statements hold.</p>
+<ol>
+<li><strong>Canonical realisation.</strong> Every PST-representable deterministic process admits a canonical five-node, four-transition PST decomposition
+\[x\longrightarrow\nabla F\longrightarrow F\longrightarrow F'\longrightarrow y.\]</li>
+<li><strong>Universal property.</strong> The free PST zigzag \(Z_{\mathrm{PST}}\) is the initial object in the category of PST-compatible process grammars. Consequently, a PST-compatible process is a morphism \(Z_{\mathrm{PST}}\to\mathbf{Proc}\).</li>
+<li><strong>Grammatical minimality.</strong> Under the PST axioms of type alternation, distinct internal structure and realization, and forbidden same-type direct transitions, every connected PST-compatible process has at least five nodes and four transitions. If it is defined as a morphism out of \(Z_{\mathrm{PST}}\), it has exactly five nodes and four transitions.</li>
+<li><strong>Relative uniqueness.</strong> Once \(F,\nabla F,F',y\) are fixed, the induced canonical decomposition is unique relative to that fixed representation. Without fixing the representation, distinct potentials, encodings, structures, or flows may generate the same terminal trajectory.</li>
+<li><strong>Dynamical realisation.</strong> If \(\dot y(t)=G(y(t),t)\), \(y(t_0)=x\), and there exist smooth potentials \(E,S\) and smooth operators \(L,M\) such that
+\[G(y,t)=L(y,t)dE(y,t)+M(y,t)dS(y,t),\]
+then the process admits the GENERIC-type realisation
+\[x\longrightarrow(dE,dS)\longrightarrow(L,M)\longrightarrow v\longrightarrow y,\]
+where \(v=LdE+MdS\). If the induced vector field is locally Lipschitz in \(y\), Picard--Lindel\"of gives a unique local integral curve.</li>
+<li><strong>Dissipative specialization.</strong> If the entropy contribution is absent and \(K\) is self-adjoint and positive definite with respect to a Riemannian metric \(g\), and \(v=-KdE\), then
+\[\frac{d}{dt}E(y(t))=-\langle dE,KdE\rangle_g<0\]
+whenever \(dE\ne0\).</li>
+<li><strong>Shannon realisation.</strong> The Shannon communication system
+\[\text{source}\to\text{transmitter}\to\text{channel}\to\text{receiver}\to\text{destination}\]
+is a model of the free PST zigzag.</li>
+<li><strong>Laplace realisation.</strong> For a linear time-invariant system,
+\[x(t)\xrightarrow{\mathcal L}X(s)\xrightarrow{\times H(s)}Y(s)\xrightarrow{\mathcal L^{-1}}y(t)\]
+is a linear, time-invariant model of the PST zigzag, not its universal foundation.</li>
+<li><strong>Adjunction realisation.</strong> For an adjunction \(\Phi_o\dashv\Phi_z\), its unit and counit furnish a \(2\)-categorical model of the PST zigzag. The adjunction alone does not imply that every process has exactly five nodes.</li>
+<li><strong>Exact scope.</strong> The theorem does not assert that every conceivable process is PST-representable. It asserts precisely:
+\[\text{PST-representable process}\Longrightarrow\text{canonical five-node PST decomposition}.\]
+The converse is false without additional axioms.</li>
+<li><strong>Meso-palindrome hypothesis.</strong> Each PST edge may admit an internal meso-level unfolding
+\[\varepsilon\to\eta\to\eta\to\varepsilon.\]
+This is a separate PST hypothesis or axiom, not a consequence of the adjunction.</li>
+</ol>
+<p>Therefore, the defensible ALVK form of PST is:</p>
+<div class="equation">\[
+\boxed{
+\text{A PST-representable deterministic process}
+\Longleftrightarrow
+\text{a morphism from the free PST zigzag}
+}
+\]</div>
+<p>and, under the canonical PST grammar,</p>
+<div class="equation">\[
+\boxed{
+x\longrightarrow\nabla F\longrightarrow F\longrightarrow F'\longrightarrow y
+}
+\]</div>
+<p>is the minimal coherent five-node, four-transition realisation of a PST-representable process.</p>
+</div>
+</section>
+<section>
+<h2>Cross-domain models</h2>
+<table>
+<tr><th>PST node</th><th>Shannon</th><th>GENERIC</th><th>Laplace</th><th>Category theory</th></tr>
+<tr><td>\(x\)</td><td>Source</td><td>State</td><td>Input</td><td>Object</td></tr>
+<tr><td>\(\nabla F\)</td><td>Transmitter</td><td>\((dE,dS)\)</td><td>Transform</td><td>Unit</td></tr>
+<tr><td>\(F\)</td><td>Channel</td><td>\((L,M)\)</td><td>Transfer function</td><td>Adjoint pair</td></tr>
+<tr><td>\(F'\)</td><td>Receiver</td><td>Flow \(v\)</td><td>Inverse transform</td><td>Counit</td></tr>
+<tr><td>\(y\)</td><td>Destination</td><td>Trajectory</td><td>Output</td><td>Object</td></tr>
+</table>
+</section>
+<footer><p>Part of the PST / QURIQ framework. Rendered with MathJax.</p></footer>
+</article>
+</body>
+</html>
